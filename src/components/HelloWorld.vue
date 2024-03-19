@@ -12,23 +12,45 @@
               <b-form-input type="text"></b-form-input>
             </div>
 
+            <!-- Attack Description -->
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Attack Description: </label>
+              <b-form-textarea type="text"></b-form-textarea>
+            </div>
+
+            <!-- Attack now or later radio button -->
+            <div class="d-flex mb-3">
+              <div class="d-flex mb-3"> Attack When: </div>
+              <div class="d-flex mb-3"> <!-- TODO: NOT ALIGING PROPERLY -->
+                <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackNow"></b-form-radio>
+                <label class="me-2 align-self-center"> Attack Now </label>
+                <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackLater"></b-form-radio>
+                <label class="me-2 align-self-center"> Attack Later </label>
+              </div>
+            </div>
+
             <!-- Attack date -->
-            <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Attack Date: </label>
-              <b-form-datepicker v-model="attackLaterDate"></b-form-datepicker>
-            </div>
-            <p>Attack later Date: '{{ attackLaterDate }}'</p>
+            <div v-if="attackNowOrLaterRadio.includes('attackLater')">
+              <div class="d-flex mb-3">
+                <label class="me-2 align-self-center w-20">Attack Date: </label>
+                <b-form-datepicker v-model="attackLaterDate"></b-form-datepicker>
+              </div>
+              <p>Attack later Date: '{{ attackLaterDate }}'</p>
 
-            <!-- Attack time -->
-            <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Attack Time: </label>
-              <b-form-timepicker v-model="attacklaterTime" locale="en"></b-form-timepicker>
-            </div>
-            <div class="mt-2">Attack Later Time: '{{ attacklaterTime }}'</div><br>
+              <!-- Attack time -->
+              <div class="d-flex mb-3">
+                <label class="me-2 align-self-center w-20">Attack Time: </label>
+                <b-form-timepicker v-model="attacklaterTime" locale="en"></b-form-timepicker>
+              </div>
+              <div class="mt-2">Attack Later Time: '{{ attacklaterTime }}'</div><br>
 
-            <!-- Buttons that perform the phishing attack -->
-            <b-button>Attack Now</b-button>
-            <b-button>Attack Later</b-button>
+              <!-- 'Schedule Attack' button apears -->
+              <b-button>Schedule Attack</b-button>
+            </div>
+            <div v-else>
+              <!-- 'Attack Now' button is displayed when user selects to attack now -->
+              <b-button>Attack Now</b-button>
+            </div>
           </div>
 
           <!-- RIGHT SIDE -->
@@ -48,29 +70,36 @@
 
 
       <b-tab title="Previous Attacks">
-        <p>This is a list of all the previous attacks that have occurred</p>
+        <p>This is a list of all the previous attacks that have occurred. Click on an row to get more information</p>
 
-        <div role="tablist">
-          <b-card no-body class="mb-1" v-for="(prevAttackObj, index) in prevAttackArray">
-            <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-button block v-b-toggle="'collapse-' + index" variant="info">{{ prevAttackObj.Attack_Name }} <i
-                  class="prevAttackDate">{{ prevAttackObj.attackDate }}</i></b-button>
-            </b-card-header>
-            <b-collapse :id="'collapse-' + index" accordion="my-accordion" role="tabpanel">
-              <b-card-body>
-                <b-card-text>Description: {{ prevAttackObj.Description }}</b-card-text>
-                <b-card-text>Employees Involved: <br></b-card-text>
-                <b-list-group-item v-for="(empl, index2) in prevAttackObj.employees">
-                  {{ prevAttackObj.employees[index2].first_name + " " + prevAttackObj.employees[index2].last_name + " -"
-                +
-                prevAttackObj.employees[index2].email }}</b-list-group-item>
-              </b-card-body>
-            </b-collapse>
-          </b-card>
+        <div class="d-flex ">
+          <!-- Left side -->
+          <!-- List of all the attacks in a table -->
+          <div class="w-50 mx-2 px-2">
+            <b-table striped hover :fields="fields" :items="prevAttackArray" @row-clicked="rowClicked">
+              <template #cell()="data">
+                {{ data.value }}
+              </template>
+            </b-table>
+          </div>
+
+          <!-- Right Side -->
+          <!-- Displays more detail about the attack selected by user -->
+          <div class="w-50 mx-2 px-2">
+
+            <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
+              <b-card-text>
+                <div>
+                  <b-table stacked :items="[selectedAttack]"></b-table>
+                </div>
+              </b-card-text>
+            </b-card>
+          </div>
         </div>
-
-
       </b-tab>
+
+
+
       <b-tab title="Email Content">
         <p>I'm the third tab!</p>
       </b-tab>
@@ -86,22 +115,41 @@ export default {
     return {
       name: 'BootstrapVue',
       show: true,
+      attackNowOrLaterRadio: '',
       text: 'temp text - change later',
       attackLaterDate: '',
       attacklaterTime: '',
+      fields: [
+        { key: 'name', label: 'Attack Name' },
+        { key: 'date', label: 'Date' }
+      ],
       prevAttackArray: [
-        { Attack_Name: 'Attack 1', Description: 'Content for Item 1', attackDate: 'sdfs', employees: [{ first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' }, { first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }] },
-        { Attack_Name: 'Attack no. 2', Description: 'Content for Item 1', attackDate: 'ascsc', employees: [{ first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' }] },
-        { Attack_Name: 'Attack wiwak butt', Description: 'Content for Item 1', attackDate: ' cdscsc', employees: [] }
+        { name: 'Attack 1', description: 'Content for Item 1', date: '01-01-2024', employees: [{ first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' }, { first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }] },
+        { name: 'Attack no. 2', description: 'Content for Item 2', date: '04-29-1990', employees: [{ first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' }] },
+        { name: 'Attack wiwak butt', description: 'Content for Item 3', date: '06-04-1990', employees: [] }
       ],
       employeeList: [
         { isSelected: false, first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' },
         { isSelected: false, first_name: 'Larsen', last_name: 'Shaw', email: 'LShaw@gmail.com' },
         { isSelected: false, first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' },
         { isSelected: false, first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }
-      ]
+      ],
+      selectedAttack: {
+        name: '',
+        description: '',
+        employees: [],
+        date: ''
+      }
     }
   },
+  methods: {
+    rowClicked(item, i, ev) {
+      this.selectedAttack.name = item.name
+      this.selectedAttack.description = item.description
+      this.selectedAttack.employees = item.employees
+      this.selectedAttack.date = item.date
+    },
+  }
 }
 </script>
 
