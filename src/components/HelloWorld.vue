@@ -90,7 +90,8 @@
             <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
               <b-card-text>
                 <div>
-                  <b-table stacked :items="[selectedAttack]"></b-table>
+                  <b-table stacked :items="[selectedAttack]">
+                  </b-table>
                 </div>
               </b-card-text>
             </b-card>
@@ -101,7 +102,18 @@
 
 
       <b-tab title="Email Content">
-        <p>I'm the third tab!</p>
+        <div class="d-flex ">
+          <!-- LEFT SIDE -->
+          <div class="w-50 mx-2 px-2">
+            <p>List of all email templates</p>
+            <div>
+              <b-table striped hover :items="emailTemplates" :fields="['company', 'type', 'subject']"
+                @row-clicked="emailTemplateRowClicked">
+
+              </b-table>
+            </div>
+          </div>
+        </div>
       </b-tab>
     </b-tabs>
   </div>
@@ -139,15 +151,46 @@ export default {
         description: '',
         employees: [],
         date: ''
-      }
+      },
+      selectedEmailTemplate: {
+        subject: '',
+        body: '',
+        type: '',
+        company: ''
+      },
+      emailTemplates: [
+        {
+          subject: 'Urgent Action Required: Your Walmart Account Security Alert',
+          body: 'Dear valued customer,\ntemp', type: 'marketing', company: 'Walmart'
+        }
+      ]
     }
   },
   methods: {
     rowClicked(item, i, ev) {
       this.selectedAttack.name = item.name
       this.selectedAttack.description = item.description
-      this.selectedAttack.employees = item.employees
+      // TODO: when retrieving the employees, create a loop that stores all data to be displayed in a list 
+      //this.selectedAttack.employees = item.employees
+
+      // Make sure the 'selectedAttack.employees' is an empty array before appending the selected attack employees into the list
+      let emptyTempArray = []
+      this.selectedAttack.employees = emptyTempArray
+
+      // Looping through the selected attack's employees involved list and adding it to the selectedAttack.employees array
+      for (let i = 0; i < item.employees.length; i++) {
+        console.log("length val = ", item.employees.length);
+        //this.selectedAttack.employees[i] = item.employees[i]
+        this.selectedAttack.employees.push(item.employees)
+      }
       this.selectedAttack.date = item.date
+    },
+    emailTemplateRowClicked(item, i, ev) {
+      this.selectedEmailTemplate.subject = item.subject
+      this.selectedEmailTemplate.body = item.body
+      this.selectedEmailTemplate.type = item.type
+      this.selectedEmailTemplate.company = item.company
+      console.log(this.selectedEmailTemplate.company)
     },
   }
 }
