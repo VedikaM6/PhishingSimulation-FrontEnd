@@ -76,7 +76,7 @@
           <!-- Left side -->
           <!-- List of all the attacks in a table -->
           <div class="w-50 mx-2 px-2">
-            <b-table striped hover :fields="fields" :items="prevAttackArray" @row-clicked="rowClicked">
+            <b-table striped hover :fields="['name', 'date']" :items="prevAttackArray" @row-clicked="rowClicked">
               <template #cell()="data">
                 {{ data.value }}
               </template>
@@ -104,6 +104,7 @@
       <b-tab title="Email Content">
         <div class="d-flex ">
           <!-- LEFT SIDE -->
+          <!-- Displaying a list of all emaill templates in db -->
           <div class="w-50 mx-2 px-2">
             <p>List of all email templates</p>
             <div>
@@ -112,6 +113,19 @@
 
               </b-table>
             </div>
+          </div>
+
+          <!-- Right Side -->
+          <!-- Displays more detail about the email template selected by user -->
+          <div class="w-50 mx-2 px-2">
+            <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
+              <b-card-text>
+                <div>
+                  <b-table stacked :items="[selectedEmailTemplate]">
+                  </b-table>
+                </div>
+              </b-card-text>
+            </b-card>
           </div>
         </div>
       </b-tab>
@@ -131,10 +145,6 @@ export default {
       text: 'temp text - change later',
       attackLaterDate: '',
       attacklaterTime: '',
-      fields: [
-        { key: 'name', label: 'Attack Name' },
-        { key: 'date', label: 'Date' }
-      ],
       prevAttackArray: [
         { name: 'Attack 1', description: 'Content for Item 1', date: '01-01-2024', employees: [{ first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' }, { first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }] },
         { name: 'Attack no. 2', description: 'Content for Item 2', date: '04-29-1990', employees: [{ first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' }] },
