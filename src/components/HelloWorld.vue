@@ -63,6 +63,22 @@
                   <b-form-checkbox></b-form-checkbox>
                 </template>
               </b-table>
+
+            </div>
+            <div>
+
+              <!-- Button that opens up a new modal to add new employees -->
+              <b-button block v-b-modal.modal-1>Add Employee</b-button>
+              <b-modal id="modal-1" title="Add Employee">
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-40">Employee Name: </label>
+                  <b-form-input type="text" class="mx-3"></b-form-input></br>
+                </div>
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-40">Employee Email: </label>
+                  <b-form-input type="text" class="mx-3"></b-form-input>
+                </div>
+              </b-modal>
             </div>
           </div>
         </div>
@@ -86,11 +102,10 @@
           <!-- Right Side -->
           <!-- Displays more detail about the attack selected by user -->
           <div class="w-50 mx-2 px-2">
-
             <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
               <b-card-text>
                 <div>
-                  <b-table stacked :items="[selectedAttack]">
+                  <b-table stacked :items="[selectedAttack]" :fields="['description', 'employees']">
                   </b-table>
                 </div>
               </b-card-text>
@@ -110,7 +125,6 @@
             <div>
               <b-table striped hover :items="emailTemplates" :fields="['company', 'type', 'subject']"
                 @row-clicked="emailTemplateRowClicked">
-
               </b-table>
             </div>
           </div>
@@ -118,7 +132,7 @@
           <!-- Right Side -->
           <!-- Displays more detail about the email template selected by user -->
           <div class="w-50 mx-2 px-2">
-            <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
+            <b-card :title=selectedAttack.name>
               <b-card-text>
                 <div>
                   <b-table stacked :items="[selectedEmailTemplate]">
@@ -171,7 +185,14 @@ export default {
       emailTemplates: [
         {
           subject: 'Urgent Action Required: Your Walmart Account Security Alert',
-          body: 'Dear valued customer,\ntemp', type: 'marketing', company: 'Walmart'
+          body: 'Dear valued customer,\ntemp', type: 'Account Security', company: 'Walmart'
+        },
+        {
+          subject: 'New Deals - Template 2 Attack Email',
+          body: 'Dear valued customer,\nMore text\nMore and more text', type: 'Deals', company: 'Winners'
+        },
+        {
+
         }
       ]
     }
@@ -181,7 +202,7 @@ export default {
       this.selectedAttack.name = item.name
       this.selectedAttack.description = item.description
       // TODO: when retrieving the employees, create a loop that stores all data to be displayed in a list 
-      //this.selectedAttack.employees = item.employees
+
 
       // Make sure the 'selectedAttack.employees' is an empty array before appending the selected attack employees into the list
       let emptyTempArray = []
@@ -191,16 +212,20 @@ export default {
       for (let i = 0; i < item.employees.length; i++) {
         console.log("length val = ", item.employees.length);
         //this.selectedAttack.employees[i] = item.employees[i]
-        this.selectedAttack.employees.push(item.employees)
+        this.selectedAttack.employees.push(item.employees[i])
       }
       this.selectedAttack.date = item.date
     },
     emailTemplateRowClicked(item, i, ev) {
+      // Make sure 'selectedEmailTemplate' values equal to empty array before adding values of selected item from the table
+      let emptyTempArray = []
+      this.selectedEmailTemplate = emptyTempArray
+
+      // Store all values of selected email template into the 'selectedEmailTemplate' variable
       this.selectedEmailTemplate.subject = item.subject
       this.selectedEmailTemplate.body = item.body
       this.selectedEmailTemplate.type = item.type
       this.selectedEmailTemplate.company = item.company
-      console.log(this.selectedEmailTemplate.company)
     },
   }
 }
@@ -232,5 +257,9 @@ export default {
 
 .w-20 {
   width: 20%;
+}
+
+.w-40 {
+  width: 40%;
 }
 </style>
