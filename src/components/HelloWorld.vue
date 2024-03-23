@@ -127,6 +127,28 @@
                 @row-clicked="emailTemplateRowClicked">
               </b-table>
             </div>
+            <!-- Button that opens up a modal to create a new email template -->
+            <div>
+              <b-button block v-b-modal.modal-2>Create New Template</b-button>
+              <b-modal id="modal-2" title="New Email Template">
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-20">Type: </label>
+                  <b-form-input type="text" class="mx-2"></b-form-input></br>
+                </div>
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-20">Company: </label>
+                  <b-form-input type="text" class="mx-2"></b-form-input></br>
+                </div>
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-20">Subject: </label>
+                  <b-form-input type="text" class="mx-2"></b-form-input></br>
+                </div>
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-20">Body: </label>
+                  <b-form-textarea type="text" class="mx-2"></b-form-textarea>
+                </div>
+              </b-modal>
+            </div>
           </div>
 
           <!-- Right Side -->
@@ -194,7 +216,7 @@ export default {
           body: 'Dear valued customer,\nMore text\nMore and more text', type: 'Deals', company: 'Winners'
         },
         {
-
+          subject: 'subject1 - email template', body: 'sdksadnlnclknakl', type: '', company: ''
         }
       ]
     }
