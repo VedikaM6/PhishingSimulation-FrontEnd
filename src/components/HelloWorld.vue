@@ -21,7 +21,7 @@
             <!-- Attack now or later radio button -->
             <div class="d-flex mb-3">
               <div class="d-flex mb-3"> Attack When: </div>
-              <div class="d-flex mb-3"> <!-- TODO: NOT ALIGING PROPERLY -->
+              <div class="d-flex mb-3">
                 <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackNow"></b-form-radio>
                 <label class="me-2 align-self-center"> Attack Now </label>
                 <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackLater"></b-form-radio>
@@ -44,17 +44,17 @@
               </div>
               <div class="mt-2">Attack Later Time: '{{ attacklaterTime }}'</div><br>
 
-              <!-- 'Schedule Attack' button apears -->
+              <!-- 'Schedule Attack' button apears when user selects to attack later radio button -->
               <b-button>Schedule Attack</b-button>
             </div>
             <div v-else>
-              <!-- 'Attack Now' button is displayed when user selects to attack now -->
+              <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
               <b-button>Attack Now</b-button>
             </div>
           </div>
 
           <!-- RIGHT SIDE -->
-          <!-- This is the employee table -->
+          <!-- Table that lists out all the employees from the db -->
           <div class="w-50 mx-2">
             <p>Employee List</p>
             <div>
@@ -65,9 +65,9 @@
               </b-table>
 
             </div>
-            <div>
 
-              <!-- Button that opens up a new modal to add new employees -->
+            <!-- Button that opens up a modal to add new employees -->
+            <div>
               <b-button block v-b-modal.modal-1>Add Employee</b-button>
               <b-modal id="modal-1" title="Add Employee">
                 <div class="d-flex mb-3">
@@ -101,7 +101,7 @@
 
           <!-- Right Side -->
           <!-- Displays more detail about the attack selected by user -->
-          <div class="w-50 mx-2 px-2">
+          <div class="w-50 mx-2 px-2" v-show="isVisibleAttack">
             <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
               <b-card-text>
                 <div>
@@ -131,7 +131,7 @@
 
           <!-- Right Side -->
           <!-- Displays more detail about the email template selected by user -->
-          <div class="w-50 mx-2 px-2">
+          <div class="w-50 mx-2 px-2" v-show="isVisibleEmail">
             <b-card :title=selectedAttack.name>
               <b-card-text>
                 <div>
@@ -155,6 +155,8 @@ export default {
     return {
       name: 'BootstrapVue',
       show: true,
+      isVisibleAttack: false,
+      isVisibleEmail: false,
       attackNowOrLaterRadio: '',
       text: 'temp text - change later',
       attackLaterDate: '',
@@ -198,7 +200,16 @@ export default {
     }
   },
   methods: {
+    toggleAttackVisibility() {
+      this.isVisibleAttack = !this.isVisibleAttack;
+    },
+    toggleEmailVisibility() {
+      this.isVisibleEmail = !this.isVisibleEmail;
+    },
     rowClicked(item, i, ev) {
+      // Make sure 'isVisibleEmail' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
+      this.isVisibleAttack = true
+
       this.selectedAttack.name = item.name
       this.selectedAttack.description = item.description
       // TODO: when retrieving the employees, create a loop that stores all data to be displayed in a list 
@@ -217,6 +228,9 @@ export default {
       this.selectedAttack.date = item.date
     },
     emailTemplateRowClicked(item, i, ev) {
+      // Make sure 'isVisibleEmail' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
+      this.isVisibleEmail = true
+
       // Make sure 'selectedEmailTemplate' values equal to empty array before adding values of selected item from the table
       let emptyTempArray = []
       this.selectedEmailTemplate = emptyTempArray
