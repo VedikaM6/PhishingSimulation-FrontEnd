@@ -18,6 +18,13 @@
               <b-form-textarea type="text"></b-form-textarea>
             </div>
 
+            <!-- Email Templates to choose from -->
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Email Template: </label>
+              <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates.name"
+                value-field="emailTemplates.name" class="form-select"></b-form-select></br>
+            </div>
+
             <!-- Attack now or later radio button -->
             <div class="d-flex mb-3">
               <div class="d-flex mb-3"> Attack When: </div>
@@ -123,7 +130,7 @@
           <div class="w-50 mx-2 px-2">
             <p>List of all email templates</p>
             <div>
-              <b-table striped hover :items="emailTemplates" :fields="['company', 'type', 'subject']"
+              <b-table striped hover :items="emailTemplates" :fields="['name', 'type', 'subject']"
                 @row-clicked="emailTemplateRowClicked">
               </b-table>
             </div>
@@ -131,6 +138,10 @@
             <div>
               <b-button block v-b-modal.modal-2>Create New Template</b-button>
               <b-modal id="modal-2" title="New Email Template">
+                <div class="d-flex mb-3">
+                  <label class="me-2 align-self-center w-20">Name: </label>
+                  <b-form-input type="text" class="mx-2"></b-form-input></br>
+                </div>
                 <div class="d-flex mb-3">
                   <label class="me-2 align-self-center w-20">Type: </label>
                   <b-form-select v-model="newTemplateTypeSelected" :options="emailTypeOptions"
@@ -155,7 +166,7 @@
           <!-- Right Side -->
           <!-- Displays more detail about the email template selected by user -->
           <div class="w-50 mx-2 px-2" v-show="isVisibleEmail">
-            <b-card>
+            <b-card :title=selectedEmailTemplate.name :sub-title=selectedEmailTemplate.type>
               <b-card-text>
                 <div>
                   <b-table stacked :items="[selectedEmailTemplate]">
@@ -188,7 +199,7 @@ export default {
       prevAttackArray: [
         { name: 'Attack 1', description: 'Content for Item 1', date: '01-01-2024', employees: [{ first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' }, { first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }] },
         { name: 'Attack no. 2', description: 'Content for Item 2', date: '04-29-1990', employees: [{ first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' }] },
-        { name: 'Attack wiwak butt', description: 'Content for Item 3', date: '06-04-1990', employees: [] }
+        { name: 'Attackkkkk', description: 'Content for Item 3', date: '06-04-1990', employees: [] }
       ],
       employeeList: [
         { isSelected: false, first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' },
@@ -204,6 +215,7 @@ export default {
         date: ''
       },
       selectedEmailTemplate: {
+        name: '',
         subject: '',
         body: '',
         type: '',
@@ -211,15 +223,15 @@ export default {
       },
       emailTemplates: [
         {
-          subject: 'Urgent Action Required: Your Walmart Account Security Alert',
+          name: 'account security email', subject: 'Urgent Action Required: Your Walmart Account Security Alert',
           body: 'Dear valued customer,\ntemp', type: 'Account Security Alerts', company: 'Walmart'
         },
         {
-          subject: 'New Deals - Template 2 Attack Email',
+          name: 'deals email', subject: 'New Deals - Template 2 Attack Email',
           body: 'Dear valued customer,\nMore text\nMore and more text', type: 'Shopping Deals/Clearence Items', company: 'Winners'
         },
         {
-          subject: 'subject1 - email template', body: 'sdksadnlnclknakl', type: 'Financial', company: 'temp companyy'
+          name: 'financial security email', subject: 'subject1 - email template', body: 'sdksadnlnclknakl', type: 'Financial', company: 'temp companyy'
         }
       ],
       emailTypeOptions: [
@@ -241,7 +253,7 @@ export default {
       this.isVisibleEmail = !this.isVisibleEmail;
     },
     rowClicked(item, i, ev) {
-      // Make sure 'isVisibleEmail' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
+      // Make sure 'isVisibleAttack' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
       this.isVisibleAttack = true
 
       this.selectedAttack.name = item.name
@@ -270,6 +282,7 @@ export default {
       this.selectedEmailTemplate = emptyTempArray
 
       // Store all values of selected email template into the 'selectedEmailTemplate' variable
+      this.selectedEmailTemplate.name = item.name
       this.selectedEmailTemplate.subject = item.subject
       this.selectedEmailTemplate.body = item.body
       this.selectedEmailTemplate.type = item.type
