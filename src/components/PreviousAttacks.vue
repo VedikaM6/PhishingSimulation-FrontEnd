@@ -7,7 +7,8 @@
       <!-- Left side -->
       <!-- List of all the attacks in a table -->
       <div class="w-50 mx-2 px-2">
-        <b-table striped hover :fields="['name', 'date']" :items="prevAttackArray" @row-clicked="rowClicked">
+        <b-table striped hover :fields="['name', 'triggerTime']" :items="modifiedPrevAttackArray"
+          @row-clicked="rowClicked">
           <template #cell()="data">
             {{ data.value }}
           </template>
@@ -17,7 +18,7 @@
       <!-- Right Side -->
       <!-- Displays more detail about the attack selected by user -->
       <div class="w-50 mx-2 px-2" v-show="isVisibleAttack">
-        <b-card :title=selectedAttack.name :sub-title="selectedAttack.date">
+        <b-card :title=selectedAttack.name :sub-title="selectedAttack.triggerTime">
           <b-card-text>
             <div>
               <b-table stacked :items="[selectedAttack]" :fields="['description', 'employees']">
@@ -45,8 +46,24 @@ export default {
         name: '',
         description: '',
         employees: [],
-        date: ''
+        triggerTime: ''
       },
+    }
+  },
+  computed: {
+    modifiedPrevAttackArray() {
+      let res = [];
+
+      for (let i = 0; i < this.prevAttackArray.length; i++) {
+        res.push({
+          name: this.prevAttackArray[i].name,
+          triggerTime: this.getUserFriendlyDate(this.prevAttackArray[i].triggerTime),
+          description: this.prevAttackArray[i].description,
+          employees: this.prevAttackArray[i].employees
+        })
+      }
+
+      return res;
     }
   },
   methods: {
@@ -68,10 +85,15 @@ export default {
       // }
 
       // Store rest of the values of selected past attack into the 'selectedAttack' variable
-      this.selectedAttack.date = item.date
-      this.selectedAttack.name = item.name
-      this.selectedAttack.description = item.description
+      this.selectedAttack.triggerTime = this.modifiedPrevAttackArray[i].triggerTime;
+      this.selectedAttack.name = this.modifiedPrevAttackArray[i].name;
+      this.selectedAttack.description = this.modifiedPrevAttackArray[i].description;
     },
+    // Get a user-friendly formatted date
+    getUserFriendlyDate(d) {
+      let dateObj = new Date(d);
+      return dateObj.toLocaleString();
+    }
   }
 
 }

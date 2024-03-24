@@ -74,8 +74,9 @@ export default {
   },
   created() {
     // load all data from the backend
-    //this.getAllEmails();
-    //this.getAllUsers();
+    this.getAllEmails();
+    this.getAllUsers();
+    this.getAllPastAttacks();
   },
   methods: {
     toggleAttackVisibility() {
@@ -89,7 +90,7 @@ export default {
     getAllEmails() {
       let config = {
         headers: {
-          "Access-Control-Allow-Origin": "*"
+
         }
       }
       api.get("/emails", config)
@@ -97,6 +98,7 @@ export default {
           // Handle the response
           // NOTE: This is only executed when the request was successful
           // Storing the responseData of all the emails into the 'emailTemplate'
+          console.log("[getAllEmails] Got emails!");
           let responseData = resp.data;
           this.emailTemplates = responseData.emails;
         })
@@ -112,7 +114,7 @@ export default {
     getAllUsers() {
       let config = {
         headers: {
-          "Access-Control-Allow-Origin": "*"
+
         }
       }
       api.get("/users", config)
@@ -120,8 +122,40 @@ export default {
           // Handle the response
           // NOTE: This is only executed when the request was successful
           // Storing the responseData of all the emails into the 'emailTemplate'
+          console.log("[getAllEmails] Got users!");
           let responseData = resp.data;
-          this.employeeList = responseData.users;
+          let usersList = responseData.users;
+
+          for (let i = 0; i < usersList.length; i++) {
+            // Initialize the isSelected property
+            usersList[i].isSelected = false;
+          }
+
+          this.employeeList = usersList;
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
+    },
+    getAllPastAttacks() {
+      let config = {
+        headers: {
+
+        }
+      }
+      api.get("/attacks/history", config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Storing the responseData of all the emails into the 'emailTemplate'
+          console.log("[getAllEmails] Got previous attacks!");
+          let responseData = resp.data;
+          this.prevAttackArray = responseData.previousAttacks;
         })
         .catch(e => {
           // NOTE: This is executed when an error occurs (non-200 response)

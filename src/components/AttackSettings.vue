@@ -17,8 +17,8 @@
       <!-- Email Templates to choose from -->
       <div class="d-flex mb-3">
         <label class="me-2 align-self-center w-20">Email Template: </label>
-        <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates.name"
-          value-field="emailTemplates.name" class="form-select"></b-form-select></br>
+        <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates" value-field="_id" text-field="name"
+          class="form-select"></b-form-select></br>
       </div>
 
       <!-- Attack now or later radio button -->
@@ -61,7 +61,7 @@
     <div class="w-50 mx-2">
       <p>Employee List</p>
       <div>
-        <b-table striped hover :items="employeeList">
+        <b-table striped hover :items="employeeList" :fields="['isSelected', 'name', 'email']">
           <template #cell(isSelected)="data">
             <b-form-checkbox></b-form-checkbox>
           </template>
