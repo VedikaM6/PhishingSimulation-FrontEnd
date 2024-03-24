@@ -169,7 +169,7 @@
             <b-card :title=selectedEmailTemplate.name :sub-title=selectedEmailTemplate.type>
               <b-card-text>
                 <div>
-                  <b-table stacked :items="[selectedEmailTemplate]">
+                  <b-table stacked :items="[selectedEmailTemplate]" :fields="['company', 'subject', 'body']">
                   </b-table>
                 </div>
               </b-card-text>
@@ -256,10 +256,7 @@ export default {
       // Make sure 'isVisibleAttack' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
       this.isVisibleAttack = true
 
-      this.selectedAttack.name = item.name
-      this.selectedAttack.description = item.description
       // TODO: when retrieving the employees, create a loop that stores all data to be displayed in a list 
-
 
       // Make sure the 'selectedAttack.employees' is an empty array before appending the selected attack employees into the list
       let emptyTempArray = []
@@ -272,6 +269,8 @@ export default {
         this.selectedAttack.employees.push(item.employees[i])
       }
       this.selectedAttack.date = item.date
+      this.selectedAttack.name = item.name
+      this.selectedAttack.description = item.description
     },
     emailTemplateRowClicked(item, i, ev) {
       // Make sure 'isVisibleEmail' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
