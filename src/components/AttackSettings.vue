@@ -48,11 +48,17 @@
         <div class="mt-2">Attack Later Time: '{{ attackLaterTime }}'</div><br>
 
         <!-- 'Schedule Attack' button apears when user selects to attack later radio button -->
-        <b-button>Schedule Attack</b-button>
+        <b-button @click="scheduleFutureAttack">Schedule Attack</b-button>
       </div>
       <div v-else>
         <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
         <b-button>Attack Now</b-button>
+      </div>
+
+      <div>
+        <b-alert variant="danger" :show="formError !== ''">
+          {{ formError }}
+        </b-alert>
       </div>
     </div>
 
@@ -61,9 +67,9 @@
     <div class="w-50 mx-2">
       <p>Employee List</p>
       <div>
-        <b-table striped hover :items="employeeList" :fields="['isSelected', 'name', 'email']">
+        <b-table striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']">
           <template #cell(isSelected)="data">
-            <b-form-checkbox></b-form-checkbox>
+            <b-form-checkbox v-model="data.item.isSelected"></b-form-checkbox>
           </template>
         </b-table>
 
@@ -98,18 +104,105 @@ export default {
     return {
       name: "",
       description: "",
-      attackLaterDate: '',
+      attackLaterDate: "",
       attackLaterTime: '',
       newTemplateTypeSelected: null,
 
-      attackNowOrLaterRadio: '',
+      // contains an error message if the form is invalid
+      formError: "",
+
+      attackNowOrLaterRadio: 'attackNow',
 
       newEmployeeName: "",
       newEmployeeEmail: "",
+      localEmployeeList: this.employeeList,
+    }
+  },
+  watch: {
+    employeeList(newVal, oldVal) {
+      console.log("[watch][employeelist] Employees updated!");
+      this.localEmployeeList = JSON.parse(JSON.stringify(newVal))
+    }
+  },
+  computed: {
+    selectedUsers() {
+      let res = [];
+
+      for (let i = 0; i < this.localEmployeeList.length; i++) {
+        if (this.localEmployeeList[i].isSelected) {
+          res.push(this.localEmployeeList[i]);
+        }
+      }
+
+      return res;
     }
   },
   methods: {
+    scheduleFutureAttack() {
+      console.log("[scheduleFutureAttack] Hit.");
+      // validate form info
+      if (!this.name) {
+        // Name is empty
+        this.formError = "Please specify a name.";
+        return;
+      } else if (!this.description) {
+        // Description is empty
+        this.formError = "Please specify a description.";
+        return;
+      } else if (!this.newTemplateTypeSelected) {
+        // Email Template is empty
+        this.formError = "Please select an email template.";
+        return;
+      } else if (!this.attackLaterDate || new Date(this.attackLaterDate) < new Date()) {
+        // Date is invalid (empty or in the past)
+        this.formError = "The date is empty or in the past.";
+        return;
+      } else if (!this.attackLaterTime) {
+        // Time is empty
+        this.formError = "Please specify a time.";
+        return;
+      } else if (this.selectedUsers.length === 0) {
+        // Selected users is empty
+        this.formError = "Please select at least 1 user.";
+        return;
+      }
 
+      // The form is valid
+      this.formError = "";
+
+      let newAttack = {
+        name: this.name,
+        description: this.description,
+        triggerTime: new Date(this.attackLaterDate),
+        emailId: this.newTemplateTypeSelected,
+        targetRecipients: this.getSelectedTargetRecipients(),
+        targetUserIds: this.getSelectedTargetUserIds()
+      }
+
+      // emit an event to the parent to create this attack
+      this.$emit("createAttack", newAttack)
+    },
+    getSelectedTargetRecipients() {
+      let res = [];
+
+      for (let i = 0; i < this.selectedUsers.length; i++) {
+        res.push({
+          name: this.selectedUsers[i].name,
+          address: this.selectedUsers[i].email
+        })
+      }
+
+      return res;
+    },
+    getSelectedTargetUserIds() {
+      let res = [];
+
+      for (let i = 0; i < this.selectedUsers.length; i++) {
+        res.push(this.selectedUsers[i]._id)
+      }
+
+      return res;
+    }
   }
 
 }

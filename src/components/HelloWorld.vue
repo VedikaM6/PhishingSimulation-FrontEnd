@@ -3,7 +3,7 @@
     <b-tabs fill justified content-class="mt-3" nav-wrapper-class="w-30">
       <!--------- ATTACK SETTINGS ---------->
       <b-tab title="Attack Settings" active>
-        <AttackSettings :email-templates="emailTemplates" :employee-list="employeeList">
+        <AttackSettings :email-templates="emailTemplates" :employee-list="employeeList" @createAttack="createNewAttack">
 
         </AttackSettings>
       </b-tab>
@@ -166,6 +166,26 @@ export default {
           }
         });
     },
+    createNewAttack(newAttackObj) {
+      let config = {
+        headers: {}
+      }
+      api.put("/attacks/future", newAttackObj, config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Storing the responseData of all the emails into the 'emailTemplate'
+          console.log("[getAllEmails] Successfully created new attack!");
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
+    }
   }
 }
 </script>
