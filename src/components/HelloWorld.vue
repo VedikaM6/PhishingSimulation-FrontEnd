@@ -183,6 +183,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+
+let api = axios.create({
+  baseURL: 'http://localhost:80'
+})
+
 export default {
   name: 'HelloWorld',
   data() {
@@ -222,17 +228,17 @@ export default {
         company: ''
       },
       emailTemplates: [
-        {
-          name: 'account security email', subject: 'Urgent Action Required: Your Walmart Account Security Alert',
-          body: 'Dear valued customer,\ntemp', type: 'Account Security Alerts', company: 'Walmart'
-        },
-        {
-          name: 'deals email', subject: 'New Deals - Template 2 Attack Email',
-          body: 'Dear valued customer,\nMore text\nMore and more text', type: 'Shopping Deals/Clearence Items', company: 'Winners'
-        },
-        {
-          name: 'financial security email', subject: 'subject1 - email template', body: 'sdksadnlnclknakl', type: 'Financial', company: 'temp companyy'
-        }
+        // {
+        //   name: 'account security email', subject: 'Urgent Action Required: Your Walmart Account Security Alert',
+        //   body: 'Dear valued customer,\ntemp', type: 'Account Security Alerts', company: 'Walmart'
+        // },
+        // {
+        //   name: 'deals email', subject: 'New Deals - Template 2 Attack Email',
+        //   body: 'Dear valued customer,\nMore text\nMore and more text', type: 'Shopping Deals/Clearence Items', company: 'Winners'
+        // },
+        // {
+        //   name: 'financial security email', subject: 'subject1 - email template', body: 'sdksadnlnclknakl', type: 'Financial', company: 'temp companyy'
+        // }
       ],
       emailTypeOptions: [
         { value: 'Account Security Alerts', text: 'Account Security Alerts' },
@@ -244,6 +250,10 @@ export default {
         { value: 'Job Opportunities', text: 'Job Opportunities' }
       ]
     }
+  },
+  created() {
+    // load all data from the backend
+    this.getAllEmails();
   },
   methods: {
     toggleAttackVisibility() {
@@ -263,15 +273,18 @@ export default {
       this.selectedAttack.employees = emptyTempArray
 
       // Looping through the selected attack's employees involved list and adding it to the selectedAttack.employees array
-      for (let i = 0; i < item.employees.length; i++) {
-        console.log("length val = ", item.employees.length);
-        //this.selectedAttack.employees[i] = item.employees[i]
-        this.selectedAttack.employees.push(item.employees[i])
-      }
+      // for (let i = 0; i < item.employees.length; i++) {
+      //   console.log("length val = ", item.employees.length);
+      //   //this.selectedAttack.employees[i] = item.employees[i]
+      //   this.selectedAttack.employees.push(item.employees[i])
+      // }
+
+      // Store rest of the values of selected past attack into the 'selectedAttack' variable
       this.selectedAttack.date = item.date
       this.selectedAttack.name = item.name
       this.selectedAttack.description = item.description
     },
+    // Stores the selected email template into an object that is then displayed in depth on the right side
     emailTemplateRowClicked(item, i, ev) {
       // Make sure 'isVisibleEmail' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
       this.isVisibleEmail = true
@@ -286,6 +299,50 @@ export default {
       this.selectedEmailTemplate.body = item.body
       this.selectedEmailTemplate.type = item.type
       this.selectedEmailTemplate.company = item.company
+    },
+
+    // Methods to get all emails templates from 
+    getAllEmails() {
+      let config = {
+        headers: {}
+      }
+      api.get("/emails", config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Storing the responseData of all the emails into the 'emailTemplate'
+          let responseData = resp.data;
+          this.emailTemplates = responseData.emails;
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
+    },
+    getAllUsers() {
+      let config = {
+        headers: {}
+      }
+      api.get("/users", config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Storing the responseData of all the emails into the 'emailTemplate'
+          let responseData = resp.data;
+          this.employeeList = responseData.users;
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
     },
   }
 }
