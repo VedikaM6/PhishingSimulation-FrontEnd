@@ -53,7 +53,7 @@
       <div v-else>
         <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
         <b-button>Attack Now</b-button>
-      </div>
+      </div></br>
 
       <div>
         <b-alert variant="danger" :show="formError !== ''">
@@ -87,6 +87,12 @@
             <label class="me-2 align-self-center w-40">Employee Email: </label>
             <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
           </div>
+          <b-button class="mt-3" @click="addNewEmployee">Add Employee</b-button>
+
+          <b-alert variant="danger" :show="formError !== ''">
+            {{ formErrorNewEmployee }}
+          </b-alert>
+
         </b-modal>
       </div>
     </div>
@@ -116,6 +122,9 @@ export default {
       newEmployeeName: "",
       newEmployeeEmail: "",
       localEmployeeList: this.employeeList,
+
+      // contains an error message if the new employee form is invalid
+      formErrorNewEmployee: "",
     }
   },
   watch: {
@@ -202,6 +211,30 @@ export default {
       }
 
       return res;
+    },
+    addNewEmployee() {
+      // Validate all information is provided on the modal
+      console.log("[addNewEmployee] Hit.");
+      if (!this.newEmployeeName) {
+        // Employee name is empty
+        this.formErrorNewEmployee = "Please specify employee's name.";
+        return;
+      } else if (!this.newEmployeeEmail) {
+        // Employee email is empty
+        this.formErrorNewEmployee = "Please specify employee's email.";
+        return;
+      }
+
+      // Validation completed
+      this.formErrorNewEmployee = "";
+
+      let newEmployee = {
+        name: this.newEmployeeName,
+        email: this.newEmployeeEmail
+      }
+
+      // emit an event to the parent to create a new employee
+      this.$emit("createEmployee", newEmployee)
     }
   }
 

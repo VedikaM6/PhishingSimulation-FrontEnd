@@ -3,7 +3,8 @@
     <b-tabs fill justified content-class="mt-3" nav-wrapper-class="w-30">
       <!--------- ATTACK SETTINGS ---------->
       <b-tab title="Attack Settings" active>
-        <AttackSettings :email-templates="emailTemplates" :employee-list="employeeList" @createAttack="createNewAttack">
+        <AttackSettings :email-templates="emailTemplates" :employee-list="employeeList" @createAttack="createNewAttack"
+          @createEmployee="createNewEmployee">
 
         </AttackSettings>
       </b-tab>
@@ -122,7 +123,7 @@ export default {
           // Handle the response
           // NOTE: This is only executed when the request was successful
           // Storing the responseData of all the emails into the 'emailTemplate'
-          console.log("[getAllEmails] Got users!");
+          console.log("[getAllUsers] Got users!");
           let responseData = resp.data;
           let usersList = responseData.users;
 
@@ -185,7 +186,28 @@ export default {
             console.log(e);
           }
         });
+    },
+    createNewEmployee(newEmployeeObj) {
+      let config = {
+        headers: {}
+      }
+      api.put("/user", newEmployeeObj, config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Adding a new employee to the list of employees 
+          console.log("[createNewEmployee] Successfully created new attack!");
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
     }
+
   }
 }
 </script>
