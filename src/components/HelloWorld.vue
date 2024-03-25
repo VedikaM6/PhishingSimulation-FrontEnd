@@ -52,12 +52,7 @@ export default {
         { name: 'Attack no. 2', description: 'Content for Item 2', date: '04-29-1990', employees: [{ first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' }] },
         { name: 'Attackkkkk', description: 'Content for Item 3', date: '06-04-1990', employees: [] }
       ],
-      employeeList: [
-        { isSelected: false, first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' },
-        { isSelected: false, first_name: 'Larsen', last_name: 'Shaw', email: 'LShaw@gmail.com' },
-        { isSelected: false, first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' },
-        { isSelected: false, first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }
-      ],
+      employeeList: [],
       emailTemplates: [
         {
           name: 'account security email', subject: 'Urgent Action Required: Your Walmart Account Security Alert',

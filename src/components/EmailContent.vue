@@ -12,7 +12,7 @@
       <!-- Button that opens up a modal to create a new email template -->
       <div>
         <b-button block v-b-modal.modal-2>Create New Template</b-button>
-        <b-modal id="modal-2" title="New Email Template">
+        <b-modal ref="newTemplateModal" id="modal-2" title="New Email Template" hide-footer>
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Name: </label>
             <b-form-input v-model="name" type="text" class="mx-2"></b-form-input></br>
@@ -34,13 +34,14 @@
             <label class="me-2 align-self-center w-20">Body: </label>
             <b-form-textarea v-model="body" type="text" class="mx-2"></b-form-textarea>
           </div>
-          <b-button @click="createNewTemplate"></b-button>
+          <b-button class="mt-3" @click="createNewTemplate">Create Template</b-button>
+          <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
 
-          <div>
-            <b-alert variant="danger" :show="newTemplateError !== ''">
-              {{ newTemplateError }}
-            </b-alert>
-          </div>
+          <!-- Displaying alert in modal if any fields are empty when clicking 'Create Template' button -->
+          <b-alert variant="danger" :show="newTemplateError !== ''">
+            {{ newTemplateError }}
+          </b-alert>
+
 
         </b-modal>
       </div>
@@ -157,8 +158,12 @@ export default {
         body: this.body
       }
 
-      // emit an event to the parent to create this attack
+      // emit an event to the parent to create this template
       this.$emit("createNewEmailTemplate", newEmailTemplate)
+    },
+    // Hide modal when 'cancel' button is pressed in the 'Add New Employee' modal
+    hideModal() {
+      this.$refs['newTemplateModal'].hide()
     }
   }
 

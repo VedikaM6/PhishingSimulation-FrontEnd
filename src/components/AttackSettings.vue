@@ -78,7 +78,7 @@
       <!-- Button that opens up a modal to add new employees -->
       <div>
         <b-button block v-b-modal.modal-1>Add Employee</b-button>
-        <b-modal id="modal-1" title="Add Employee">
+        <b-modal ref="addNewEmployeeModal" id="modal-1" title="Add Employee" hide-footer>
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-40">Employee Name: </label>
             <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>
@@ -88,6 +88,7 @@
             <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
           </div>
           <b-button class="mt-3" @click="addNewEmployee">Add Employee</b-button>
+          <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
 
           <b-alert variant="danger" :show="formErrorNewEmployee !== ''">
             {{ formErrorNewEmployee }}
@@ -237,6 +238,10 @@ export default {
 
       // emit an event to the parent to create a new employee
       this.$emit("createEmployee", newEmployee)
+    },
+    // Hide modal when 'cancel' button is pressed in the 'Add New Employee' modal
+    hideModal() {
+      this.$refs['addNewEmployeeModal'].hide()
     }
   }
 
