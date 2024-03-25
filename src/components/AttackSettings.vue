@@ -89,7 +89,7 @@
           </div>
           <b-button class="mt-3" @click="addNewEmployee">Add Employee</b-button>
 
-          <b-alert variant="danger" :show="formError !== ''">
+          <b-alert variant="danger" :show="formErrorNewEmployee !== ''">
             {{ formErrorNewEmployee }}
           </b-alert>
 
@@ -108,6 +108,7 @@ export default {
   },
   data() {
     return {
+      // variables connected to the input fields of all 'newAttackSettings' form
       name: "",
       description: "",
       attackLaterDate: "",
@@ -119,6 +120,7 @@ export default {
 
       attackNowOrLaterRadio: 'attackNow',
 
+      // variables connected to the input fields of creating new employee modal
       newEmployeeName: "",
       newEmployeeEmail: "",
       localEmployeeList: this.employeeList,

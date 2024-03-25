@@ -19,7 +19,7 @@
 
 
       <b-tab title="Email Content">
-        <EmailContent :email-templates="emailTemplates"></EmailContent>
+        <EmailContent :email-templates="emailTemplates" @createNewEmailTemplate="createNewEmailTemplate"></EmailContent>
       </b-tab>
     </b-tabs>
   </div>
@@ -196,7 +196,27 @@ export default {
           // Handle the response
           // NOTE: This is only executed when the request was successful
           // Adding a new employee to the list of employees 
-          console.log("[createNewEmployee] Successfully created new attack!");
+          console.log("[createNewEmployee] Successfully created new employee!");
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
+    },
+    createNewEmailTemplate(newEmailTemplateObj) {
+      let config = {
+        headers: {}
+      }
+      api.put("/emails", newEmailTemplateObj, config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Adding a new email template 
+          console.log("[createNewEmailTemplate] Successfully created new email template!");
         })
         .catch(e => {
           // NOTE: This is executed when an error occurs (non-200 response)

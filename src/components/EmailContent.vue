@@ -15,7 +15,7 @@
         <b-modal id="modal-2" title="New Email Template">
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Name: </label>
-            <b-form-input type="text" class="mx-2"></b-form-input></br>
+            <b-form-input v-model="name" type="text" class="mx-2"></b-form-input></br>
           </div>
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Type: </label>
@@ -24,16 +24,24 @@
           </div>
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Company: </label>
-            <b-form-input type="text" class="mx-2"></b-form-input></br>
+            <b-form-input v-model="company" type="text" class="mx-2"></b-form-input></br>
           </div>
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Subject: </label>
-            <b-form-input type="text" class="mx-2"></b-form-input></br>
+            <b-form-input v-model="subject" type="text" class="mx-2"></b-form-input></br>
           </div>
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Body: </label>
-            <b-form-textarea type="text" class="mx-2"></b-form-textarea>
+            <b-form-textarea v-model="body" type="text" class="mx-2"></b-form-textarea>
           </div>
+          <b-button @click="createNewTemplate"></b-button>
+
+          <div>
+            <b-alert variant="danger" :show="newTemplateError !== ''">
+              {{ newTemplateError }}
+            </b-alert>
+          </div>
+
         </b-modal>
       </div>
     </div>
@@ -63,6 +71,7 @@ export default {
     return {
       isVisibleEmail: false,
 
+      // Stores all information on selected tempalte to display in more detail to user
       selectedEmailTemplate: {
         name: '',
         subject: '',
@@ -71,6 +80,7 @@ export default {
         company: ''
       },
 
+      // Contains the optios available to select the email template type
       emailTypeOptions: [
         { value: 'Account Security Alerts', text: 'Account Security Alerts' },
         { value: 'Shopping Deals/Clearence Items', text: 'Shopping Deals/Clearence Items' },
@@ -81,7 +91,15 @@ export default {
         { value: 'Job Opportunities', text: 'Job Opportunities' }
       ],
 
+      // variables connected to the values of each input field in the 'newEmailTemplate' modal
+      name: "",
       newTemplateTypeSelected: null,
+      company: "",
+      subject: '',
+      body: '',
+
+      // contains an error message if the form is invalid
+      newTemplateError: ""
     }
   },
   methods: {
@@ -101,6 +119,47 @@ export default {
       this.selectedEmailTemplate.type = item.type
       this.selectedEmailTemplate.company = item.company
     },
+    createNewTemplate() {
+      console.log("[createNewTemplate] Hit.");
+
+      // Validate form information
+      if (!this.name) {
+        // Email name is empty
+        this.newTemplateError = "Please specify a name.";
+        return;
+      } else if (!this.newTemplateTypeSelected) {
+        // Email Template is empty
+        this.newTemplateError = "Please select an email template.";
+        return;
+      } else if (!this.company) {
+        // Email company is empty
+        this.newTemplateError = "Please specify a email template company.";
+        return;
+      } else if (!this.subject) {
+        // Email subject is empty
+        this.newTemplateError = "Please specify the email subject.";
+        return;
+      } else if (!this.body) {
+        // Email body is empty
+        this.newTemplateError = "Please specify the email body.";
+        return;
+      }
+
+      // This form is valid
+      this.newTemplateError = "";
+
+      // Set new email template object with all values entered by user to send as request body
+      let newEmailTemplate = {
+        name: this.name,
+        type: this.newTemplateTypeSelected,
+        company: this.company,
+        subject: this.subject,
+        body: this.body
+      }
+
+      // emit an event to the parent to create this attack
+      this.$emit("createNewEmailTemplate", newEmailTemplate)
+    }
   }
 
 }
