@@ -21,7 +21,12 @@
         <b-card :title=selectedAttack.name :sub-title="selectedAttack.triggerTime">
           <b-card-text>
             <div>
-              <b-table stacked :items="[selectedAttack]" :fields="['description', 'employees']">
+              <b-table stacked :items="[selectedAttack]" :fields="['description']">
+                <b-table :items="selectedAttack.targetRecipients" :fields="['name', 'isClicked']" class="w-25">
+                  <template #cell(isClicked)="data">
+                    <b-form-checkbox v-model="data.item.isClicked"></b-form-checkbox>
+                  </template>
+                </b-table>
               </b-table>
             </div>
           </b-card-text>
@@ -48,18 +53,29 @@ export default {
         employees: [],
         triggerTime: ''
       },
+
+      // variable that stores updated list of previous attacks from db
+      localPrevAttackList: this.prevAttackArray,
+    }
+  },
+  watch: {
+    // watcher on the list of previous attacks
+    prevAttackArray(newVal, oldVal) {
+      console.log("[watch][prevAttackArray] Previous Attack List updated!");
+      this.localPrevAttackList = JSON.parse(JSON.stringify(newVal));
     }
   },
   computed: {
     modifiedPrevAttackArray() {
+      console.log("[computed][modifiedPrevAttackArray] Re-computing...");
       let res = [];
 
-      for (let i = 0; i < this.prevAttackArray.length; i++) {
+      for (let i = 0; i < this.localPrevAttackList.length; i++) {
         res.push({
-          name: this.prevAttackArray[i].name,
-          triggerTime: this.getUserFriendlyDate(this.prevAttackArray[i].triggerTime),
-          description: this.prevAttackArray[i].description,
-          employees: this.prevAttackArray[i].employees
+          name: this.localPrevAttackList[i].name,
+          triggerTime: this.getUserFriendlyDate(this.localPrevAttackList[i].triggerTime),
+          description: this.localPrevAttackList[i].description,
+          employees: this.localPrevAttackList[i].employees
         })
       }
 

@@ -52,7 +52,7 @@
       </div>
       <div v-else>
         <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
-        <b-button>Attack Now</b-button>
+        <b-button @click="scheduleAttackNow">Attack Now</b-button>
       </div></br>
 
       <div>
@@ -150,6 +150,42 @@ export default {
     }
   },
   methods: {
+    scheduleAttackNow() {
+      console.log("[scheduleAttackNow] Hit.");
+      // validate form info
+      if (!this.name) {
+        // Name is empty
+        this.formError = "Please specify a name.";
+        return;
+      } else if (!this.description) {
+        // Description is empty
+        this.formError = "Please specify a description.";
+        return;
+      } else if (!this.newTemplateTypeSelected) {
+        // Email Template is empty
+        this.formError = "Please select an email template.";
+        return;
+      } else if (this.selectedUsers.length === 0) {
+        // Selected users is empty
+        this.formError = "Please select at least 1 user.";
+        return;
+      }
+
+      // The form is valid
+      this.formError = "";
+
+      let newAttack = {
+        name: this.name,
+        description: this.description,
+        triggerTime: new Date(this.attackLaterDate),
+        emailId: this.newTemplateTypeSelected,
+        targetRecipients: this.getSelectedTargetRecipients(),
+        targetUserIds: this.getSelectedTargetUserIds()
+      }
+
+      // emit an event to the parent to create this attack
+      this.$emit("createAttackNow", newAttack)
+    },
     scheduleFutureAttack() {
       console.log("[scheduleFutureAttack] Hit.");
       // validate form info
@@ -192,7 +228,7 @@ export default {
       }
 
       // emit an event to the parent to create this attack
-      this.$emit("createAttack", newAttack)
+      this.$emit("createAttack", newAttack);
     },
     getSelectedTargetRecipients() {
       let res = [];
@@ -238,10 +274,17 @@ export default {
 
       // emit an event to the parent to create a new employee
       this.$emit("createEmployee", newEmployee)
+
+      // close the modal after emitting the event 
+      this.hideModal();
     },
     // Hide modal when 'cancel' button is pressed in the 'Add New Employee' modal
     hideModal() {
       this.$refs['addNewEmployeeModal'].hide()
+
+      // Make 'newEmployeeName' and 'newEmployeeEmail' empty after user closes the modal to add new employee
+      this.newEmployeeName = "";
+      this.newEmployeeEmail = "";
     }
   }
 

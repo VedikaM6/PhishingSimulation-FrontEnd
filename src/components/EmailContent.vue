@@ -5,7 +5,7 @@
     <div class="w-50 mx-2 px-2">
       <p>List of all email templates</p>
       <div>
-        <b-table striped hover :items="emailTemplates" :fields="['name', 'type', 'subject']"
+        <b-table striped hover :items="localEmailTemplates" :fields="['name', 'type', 'subject']"
           @row-clicked="emailTemplateRowClicked">
         </b-table>
       </div>
@@ -53,7 +53,8 @@
       <b-card :title=selectedEmailTemplate.name :sub-title=selectedEmailTemplate.type>
         <b-card-text>
           <div>
-            <b-table stacked :items="[selectedEmailTemplate]" :fields="['company', 'subject', 'body']">
+            <b-table stacked :items="[selectedEmailTemplate]" :fields="['company', 'subject', 'body']"
+              style="white-space: pre-wrap; text-align: left;">
             </b-table>
           </div>
         </b-card-text>
@@ -68,8 +69,19 @@ export default {
   props: {
     emailTemplates: Array,
   },
+  watch: {
+    emailTemplates(newVal, oldVal) {
+      if (newVal) {
+        console.log("[emailTemplates] Updated! ", newVal.length);
+        this.localEmailTemplates = JSON.parse(JSON.stringify(newVal));
+      }
+    }
+  },
   data() {
     return {
+      // a local variable to keep track of changes to the 'emailTemplates' prop
+      localEmailTemplates: this.emailTemplates ? JSON.parse(JSON.stringify(this.emailTemplates)) : [],
+
       isVisibleEmail: false,
 
       // Stores all information on selected tempalte to display in more detail to user
@@ -96,8 +108,8 @@ export default {
       name: "",
       newTemplateTypeSelected: null,
       company: "",
-      subject: '',
-      body: '',
+      subject: "",
+      body: "",
 
       // contains an error message if the form is invalid
       newTemplateError: ""
@@ -160,12 +172,21 @@ export default {
 
       // emit an event to the parent to create this template
       this.$emit("createNewEmailTemplate", newEmailTemplate)
+
+      // close the modal after creating the new template
+      this.hideModal();
     },
     // Hide modal when 'cancel' button is pressed in the 'Add New Employee' modal
     hideModal() {
       this.$refs['newTemplateModal'].hide()
+
+      // empty all existing values for creating new template modal when 'hideModal' is triggered
+      this.name = "";
+      this.newTemplateTypeSelected = null;
+      this.company = "";
+      this.subject = "";
+      this.body = "";
     }
   }
-
 }
 </script>

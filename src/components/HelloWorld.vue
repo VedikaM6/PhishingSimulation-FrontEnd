@@ -4,7 +4,7 @@
       <!--------- ATTACK SETTINGS ---------->
       <b-tab title="Attack Settings" active>
         <AttackSettings :email-templates="emailTemplates" :employee-list="employeeList" @createAttack="createNewAttack"
-          @createEmployee="createNewEmployee">
+          @createEmployee="createNewEmployee" @createAttackNow="createAttackNow">
 
         </AttackSettings>
       </b-tab>
@@ -47,25 +47,9 @@ export default {
     return {
       name: 'BootstrapVue',
       show: true,
-      prevAttackArray: [
-        { name: 'Attack 1', description: 'Content for Item 1', date: '01-01-2024', employees: [{ first_name: 'Dickerson', last_name: 'Macdonald', email: 'oldMcDonald@gmail.com' }, { first_name: 'Jami', last_name: 'Carney', email: 'JamiJami@gmail.com' }] },
-        { name: 'Attack no. 2', description: 'Content for Item 2', date: '04-29-1990', employees: [{ first_name: 'Geneva', last_name: 'Wilson', email: 'Geneva@gmail.com' }] },
-        { name: 'Attackkkkk', description: 'Content for Item 3', date: '06-04-1990', employees: [] }
-      ],
+      prevAttackArray: [],
       employeeList: [],
-      emailTemplates: [
-        {
-          name: 'account security email', subject: 'Urgent Action Required: Your Walmart Account Security Alert',
-          body: 'Dear valued customer,\ntemp', type: 'Account Security Alerts', company: 'Walmart'
-        },
-        {
-          name: 'deals email', subject: 'New Deals - Template 2 Attack Email',
-          body: 'Dear valued customer,\nMore text\nMore and more text', type: 'Shopping Deals/Clearence Items', company: 'Winners'
-        },
-        {
-          name: 'financial security email', subject: 'subject1 - email template', body: 'sdksadnlnclknakl', type: 'Financial', company: 'temp companyy'
-        }
-      ],
+      emailTemplates: [],
     }
   },
   created() {
@@ -97,6 +81,7 @@ export default {
           console.log("[getAllEmails] Got emails!");
           let responseData = resp.data;
           this.emailTemplates = responseData.emails;
+
         })
         .catch(e => {
           // NOTE: This is executed when an error occurs (non-200 response)
@@ -162,6 +147,31 @@ export default {
           }
         });
     },
+    // Function that calls the '/attack/now' endpoint
+    createAttackNow(newAttackNowObj) {
+      let config = {
+        headers: {}
+      }
+      api.post("/attacks/now", newAttackNowObj, config)
+        .then(resp => {
+          // Handle the response
+          // NOTE: This is only executed when the request was successful
+          // Storing the responseData of all the emails into the 'emailTemplate'
+          console.log("[getAllEmails] Successfully created new attack!");
+
+          // Call function to get list of all attacks after successfully creating one
+          this.getAllPastAttacks();
+        })
+        .catch(e => {
+          // NOTE: This is executed when an error occurs (non-200 response)
+          if (e.response && e.response.data) {
+            console.log(e.response.data);
+          } else {
+            console.log(e);
+          }
+        });
+    },
+    // Function that handles future attacks 
     createNewAttack(newAttackObj) {
       let config = {
         headers: {}
@@ -192,6 +202,9 @@ export default {
           // NOTE: This is only executed when the request was successful
           // Adding a new employee to the list of employees 
           console.log("[createNewEmployee] Successfully created new employee!");
+
+          // Call the function to update the list of employees after adding a new one successfully
+          this.getAllUsers();
         })
         .catch(e => {
           // NOTE: This is executed when an error occurs (non-200 response)
@@ -212,6 +225,9 @@ export default {
           // NOTE: This is only executed when the request was successful
           // Adding a new email template 
           console.log("[createNewEmailTemplate] Successfully created new email template!");
+
+          // After successfully creating a new template, we call '' to get all templates and update the existing list
+          this.getAllEmails();
         })
         .catch(e => {
           // NOTE: This is executed when an error occurs (non-200 response)
