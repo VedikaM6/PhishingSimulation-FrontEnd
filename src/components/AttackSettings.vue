@@ -78,7 +78,11 @@
       <!-- Button that opens up a modal to add new employees -->
       <div>
         <b-button block v-b-modal.modal-1>Add Employee</b-button>
-        <b-modal ref="addNewEmployeeModal" id="modal-1" title="Add Employee" hide-footer>
+        <b-modal ref="addNewEmployeeModal" id="modal-1" hide-footer>
+          <template #modal-header="{ close }">
+            <h5 class="mb-0">Add Employee</h5>
+          </template>
+
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-40">Employee Name: </label>
             <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>

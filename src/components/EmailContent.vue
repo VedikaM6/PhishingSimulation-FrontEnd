@@ -12,7 +12,11 @@
       <!-- Button that opens up a modal to create a new email template -->
       <div>
         <b-button block v-b-modal.modal-2>Create New Template</b-button>
-        <b-modal ref="newTemplateModal" id="modal-2" title="New Email Template" hide-footer>
+        <b-modal ref="newTemplateModal" id="modal-2" hide-footer>
+          <template #modal-header="{ close }">
+            <h5 class="mb-0">New Email Template</h5>
+          </template>
+
           <div class="d-flex mb-3">
             <label class="me-2 align-self-center w-20">Name: </label>
             <b-form-input v-model="name" type="text" class="mx-2"></b-form-input></br>
@@ -53,8 +57,8 @@
       <b-card :title=selectedEmailTemplate.name :sub-title=selectedEmailTemplate.type>
         <b-card-text>
           <div>
-            <b-table stacked :items="[selectedEmailTemplate]" :fields="['company', 'subject', 'body']"
-              style="white-space: pre-wrap; text-align: left;">
+            <b-table id="email-template-info" stacked :items="[selectedEmailTemplate]"
+              :fields="['company', 'subject', 'body']" style="white-space: pre-wrap; text-align: left;">
             </b-table>
           </div>
         </b-card-text>
@@ -190,3 +194,15 @@ export default {
   }
 }
 </script>
+
+<style>
+/* Style for the stacked b-table headers */
+.b-table.b-table-stacked>tbody>tr>td::before {
+  width: 20% !important;
+}
+
+/* Style for the stacked b-table data */
+.b-table.b-table-stacked>tbody>tr>td>div {
+  width: 80% !important;
+}
+</style>
