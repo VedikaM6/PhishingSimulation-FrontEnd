@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex ">
+  <div class="d-flex mb-8">
     <!-- LEFT SIDE -->
     <!-- Displaying a list of all emaill templates in db -->
     <div class="w-50 mx-2 px-2">
@@ -160,6 +160,10 @@ export default {
         // Email body is empty
         this.newTemplateError = "Please specify the email body.";
         return;
+      } else if (this.body.search(/\[\[[A-Za-z]+\]\]/) === -1) {
+        // Email body is missing placeholder for phishing link
+        this.newTemplateError = "The email body must contain a placeholder for the phishing link. Please enclose some text in double square brackets";
+        return;
       }
 
       // This form is valid
@@ -204,5 +208,9 @@ export default {
 /* Style for the stacked b-table data */
 .b-table.b-table-stacked>tbody>tr>td>div {
   width: 80% !important;
+}
+
+.mb-8 {
+  margin-bottom: 5em;
 }
 </style>
