@@ -20,13 +20,24 @@
       <div class="w-50 mx-2 px-2" v-show="isVisibleAttack">
         <b-card :title=selectedAttack.name :sub-title="selectedAttack.triggerTime">
           <b-card-text>
+            <!-- Attack info stacked table -->
             <div>
-              <b-table stacked :items="[selectedAttack]" :fields="['description']">
-                <b-table :items="selectedAttack.targetRecipients" :fields="['name', 'isClicked']" class="w-25">
+              <b-table stacked :items="[selectedAttack]" :fields="['description', 'emailTemplate']">
+                <!-- <b-table :items="selectedAttack.targetRecipients" :fields="['name', 'isClicked']" class="w-25">
                   <template #cell(isClicked)="data">
                     <b-form-checkbox v-model="data.item.isClicked"></b-form-checkbox>
                   </template>
-                </b-table>
+                </b-table> -->
+              </b-table>
+            </div>
+
+            <!-- Targeted employees table -->
+            <div class="mt-4">
+              <b-table :items="selectedAttack.targetRecipients" :fields="['name', 'clickedTime']"
+                :tbody-tr-class="rowClass">
+                <template #cell(clickedTime)="data">
+                  {{ getUserFriendlyClickedTime(data.item.clickedTime, data.item.isClicked) }}
+                </template>
               </b-table>
             </div>
           </b-card-text>
@@ -50,6 +61,7 @@ export default {
       selectedAttack: {
         name: '',
         description: '',
+        emailTemplate: '',
         employees: [],
         triggerTime: ''
       },
@@ -75,7 +87,9 @@ export default {
           name: this.localPrevAttackList[i].name,
           triggerTime: this.getUserFriendlyDate(this.localPrevAttackList[i].triggerTime),
           description: this.localPrevAttackList[i].description,
-          employees: this.localPrevAttackList[i].employees
+          employees: this.localPrevAttackList[i].employees,
+          targetRecipients: this.localPrevAttackList[i].targetRecipients,
+          emailTemplate: this.localPrevAttackList[i].usedEmail.name
         })
       }
 
@@ -87,28 +101,35 @@ export default {
       // Make sure 'isVisibleAttack' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
       this.isVisibleAttack = true
 
-      // TODO: when retrieving the employees, create a loop that stores all data to be displayed in a list 
-
       // Make sure the 'selectedAttack.employees' is an empty array before appending the selected attack employees into the list
       let emptyTempArray = []
       this.selectedAttack.employees = emptyTempArray
-
-      // Looping through the selected attack's employees involved list and adding it to the selectedAttack.employees array
-      // for (let i = 0; i < item.employees.length; i++) {
-      //   console.log("length val = ", item.employees.length);
-      //   //this.selectedAttack.employees[i] = item.employees[i]
-      //   this.selectedAttack.employees.push(item.employees[i])
-      // }
 
       // Store rest of the values of selected past attack into the 'selectedAttack' variable
       this.selectedAttack.triggerTime = this.modifiedPrevAttackArray[i].triggerTime;
       this.selectedAttack.name = this.modifiedPrevAttackArray[i].name;
       this.selectedAttack.description = this.modifiedPrevAttackArray[i].description;
+      this.selectedAttack.targetRecipients = this.modifiedPrevAttackArray[i].targetRecipients;
+      this.selectedAttack.emailTemplate = this.modifiedPrevAttackArray[i].emailTemplate;
     },
     // Get a user-friendly formatted date
     getUserFriendlyDate(d) {
       let dateObj = new Date(d);
       return dateObj.toLocaleString();
+    },
+    // Get a user-friendly formatted date for the ClickedTime
+    getUserFriendlyClickedTime(clickTime, isClicked) {
+      if (!isClicked) {
+        return "";
+      }
+
+      let dateObj = new Date(clickTime);
+      return dateObj.toLocaleString();
+    },
+    /* Get the CSS class to use for the given row */
+    rowClass(item, type) {
+      if (!item || type !== 'row') return
+      if (item.isClicked) return 'table-danger'
     }
   }
 
