@@ -1,106 +1,116 @@
 <template>
-  <div class="d-flex">
-    <!-- LEFT SIDE -->
-    <div class="w-50 mx-2 px-2">
-      <!-- Attack name -->
-      <div class="d-flex mb-3">
-        <label class="me-2 align-self-center w-20">Attack Name: </label>
-        <b-form-input type="text" v-model="name"></b-form-input>
-      </div>
+  <div>
 
-      <!-- Attack Description -->
-      <div class="d-flex mb-3">
-        <label class="me-2 align-self-center w-20">Attack Description: </label>
-        <b-form-textarea type="text" v-model="description"></b-form-textarea>
-      </div>
 
-      <!-- Email Templates to choose from -->
-      <div class="d-flex mb-3">
-        <label class="me-2 align-self-center w-20">Email Template: </label>
-        <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates" value-field="_id" text-field="name"
-          class="form-select"></b-form-select></br>
-      </div>
-
-      <!-- Attack now or later radio button -->
-      <div class="d-flex mb-3">
-        <div class="d-flex mb-3"> Attack When: </div>
+    <div class="d-flex mb-8">
+      <!-- LEFT SIDE -->
+      <div class="w-50 mx-2 px-2">
+        <!-- Attack name -->
         <div class="d-flex mb-3">
-          <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackNow"></b-form-radio>
-          <label class="me-2 align-self-center"> Attack Now </label>
-          <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackLater"></b-form-radio>
-          <label class="me-2 align-self-center"> Attack Later </label>
+          <label class="me-2 align-self-center w-20">Attack Name: </label>
+          <b-form-input type="text" v-model="name"></b-form-input>
+        </div>
+
+        <!-- Attack Description -->
+        <div class="d-flex mb-3">
+          <label class="me-2 align-self-center w-20">Attack Description: </label>
+          <b-form-textarea type="text" v-model="description"></b-form-textarea>
+        </div>
+
+        <!-- Email Templates to choose from -->
+        <div class="d-flex mb-3">
+          <label class="me-2 align-self-center w-20">Email Template: </label>
+          <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates" value-field="_id" text-field="name"
+            class="form-select"></b-form-select></br>
+        </div>
+
+        <!-- Attack now or later radio button -->
+        <div class="d-flex mb-3">
+          <div class="d-flex mb-3"> Attack When: </div>
+          <div class="d-flex mb-3">
+            <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackNow"></b-form-radio>
+            <label class="me-2 align-self-center"> Attack Now </label>
+            <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackLater"></b-form-radio>
+            <label class="me-2 align-self-center"> Attack Later </label>
+          </div>
+        </div>
+
+        <!-- Attack date -->
+        <div v-if="attackNowOrLaterRadio.includes('attackLater')">
+          <div class="d-flex mb-3">
+            <label class="me-2 align-self-center w-20">Attack Date: </label>
+            <b-form-datepicker v-model="attackLaterDate"></b-form-datepicker>
+          </div>
+
+          <!-- Attack time -->
+          <div class="d-flex mb-3">
+            <label class="me-2 align-self-center w-20">Attack Time: </label>
+            <b-form-timepicker v-model="attackLaterTime" locale="en"></b-form-timepicker>
+          </div>
+
+          <!-- 'Schedule Attack' button apears when user selects to attack later radio button -->
+          <b-button @click="scheduleFutureAttack">Schedule Attack</b-button>
+        </div>
+        <div v-else>
+          <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
+          <b-button @click="scheduleAttackNow">Attack Now</b-button>
+        </div></br>
+
+        <div>
+          <b-alert variant="danger" :show="formError !== ''">
+            {{ formError }}
+          </b-alert>
         </div>
       </div>
 
-      <!-- Attack date -->
-      <div v-if="attackNowOrLaterRadio.includes('attackLater')">
-        <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-20">Attack Date: </label>
-          <b-form-datepicker v-model="attackLaterDate"></b-form-datepicker>
-        </div>
-        <p>Attack later Date: '{{ attackLaterDate }}'</p>
+      <!-- RIGHT SIDE -->
+      <!-- Table that lists out all the employees from the db -->
+      <div class="w-50 mx-2">
+        <p>Employee List</p>
+        <div>
+          <b-table striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']">
+            <template #cell(isSelected)="data">
+              <b-form-checkbox v-model="data.item.isSelected"></b-form-checkbox>
+            </template>
+          </b-table>
 
-        <!-- Attack time -->
-        <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-20">Attack Time: </label>
-          <b-form-timepicker v-model="attackLaterTime" locale="en"></b-form-timepicker>
         </div>
-        <div class="mt-2">Attack Later Time: '{{ attackLaterTime }}'</div><br>
 
-        <!-- 'Schedule Attack' button apears when user selects to attack later radio button -->
-        <b-button @click="scheduleFutureAttack">Schedule Attack</b-button>
+        <!-- Button that opens up a modal to add new employees -->
+        <div>
+          <b-button block v-b-modal.modal-1>Add Employee</b-button>
+          <b-modal ref="addNewEmployeeModal" id="modal-1" hide-footer>
+            <template #modal-header="{ close }">
+              <h5 class="mb-0">Add Employee</h5>
+            </template>
+
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-40">Employee Name: </label>
+              <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>
+            </div>
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-40">Employee Email: </label>
+              <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
+            </div>
+            <b-button class="mt-3" @click="addNewEmployee">Add Employee</b-button>
+            <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
+
+            <b-alert variant="danger" :show="formErrorNewEmployee !== ''">
+              {{ formErrorNewEmployee }}
+            </b-alert>
+
+          </b-modal>
+        </div>
       </div>
-      <div v-else>
-        <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
-        <b-button @click="scheduleAttackNow">Attack Now</b-button>
-      </div></br>
-
       <div>
-        <b-alert variant="danger" :show="formError !== ''">
-          {{ formError }}
+        <!-- This is where we show the floating alerts -->
+        <b-alert v-model="showAlert" fade>
+          {{ alertMessage }}
         </b-alert>
       </div>
     </div>
 
-    <!-- RIGHT SIDE -->
-    <!-- Table that lists out all the employees from the db -->
-    <div class="w-50 mx-2">
-      <p>Employee List</p>
-      <div>
-        <b-table striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']">
-          <template #cell(isSelected)="data">
-            <b-form-checkbox v-model="data.item.isSelected"></b-form-checkbox>
-          </template>
-        </b-table>
 
-      </div>
-
-      <!-- Button that opens up a modal to add new employees -->
-      <div>
-        <b-button block v-b-modal.modal-1>Add Employee</b-button>
-        <b-modal ref="addNewEmployeeModal" id="modal-1" hide-footer>
-          <template #modal-header="{ close }">
-            <h5 class="mb-0">Add Employee</h5>
-          </template>
-
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-40">Employee Name: </label>
-            <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>
-          </div>
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-40">Employee Email: </label>
-            <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
-          </div>
-          <b-button class="mt-3" @click="addNewEmployee">Add Employee</b-button>
-          <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
-
-          <b-alert variant="danger" :show="formErrorNewEmployee !== ''">
-            {{ formErrorNewEmployee }}
-          </b-alert>
-
-        </b-modal>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -132,6 +142,10 @@ export default {
 
       // contains an error message if the new employee form is invalid
       formErrorNewEmployee: "",
+
+      // Alert that is displayed when attack creation was successful
+      showAlert: false,
+      alertMessage: 'Attack was successfully created!',
     }
   },
   watch: {
@@ -156,7 +170,7 @@ export default {
   methods: {
     scheduleAttackNow() {
       console.log("[scheduleAttackNow] Hit.");
-      // validate form info
+      // validate form information
       if (!this.name) {
         // Name is empty
         this.formError = "Please specify a name.";
@@ -175,9 +189,7 @@ export default {
         return;
       }
 
-      // The form is valid
-      this.formError = "";
-
+      // At this point the form is valid, so we set each inputted value to equal to a 'newAttack' object
       let newAttack = {
         name: this.name,
         description: this.description,
@@ -189,6 +201,9 @@ export default {
 
       // emit an event to the parent to create this attack
       this.$emit("createAttackNow", newAttack)
+
+      // Display the successful alert
+      this.displayFloatingAlert();
     },
     scheduleFutureAttack() {
       console.log("[scheduleFutureAttack] Hit.");
@@ -233,6 +248,9 @@ export default {
 
       // emit an event to the parent to create this attack
       this.$emit("createAttack", newAttack);
+
+      // Display the successful alert
+      this.displayFloatingAlert();
     },
     getSelectedTargetRecipients() {
       let res = [];
@@ -289,6 +307,12 @@ export default {
       // Make 'newEmployeeName' and 'newEmployeeEmail' empty after user closes the modal to add new employee
       this.newEmployeeName = "";
       this.newEmployeeEmail = "";
+    },
+    displayFloatingAlert() {
+      this.showAlert = true;
+      setTimeout(() => {
+        this.showAlert = false;
+      }, 5000);
     }
   }
 

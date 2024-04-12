@@ -2,7 +2,9 @@
   <div>
     <p>This is a list of all the previous attacks that have occurred. Click on an row to get more information</p>
 
-    <div class="d-flex ">
+    <div class="d-flex mb-8">
+      <!-- Descrition of tab -->
+
 
       <!-- Left side -->
       <!-- List of all the attacks in a table -->

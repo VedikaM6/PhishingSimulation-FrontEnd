@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div class="mt-5">
+    <div class="mb-4 ms-auto me-4" style="width: fit-content">
+      <RouterLink to="/dashboard" class="btn btn-primary">Dashboard</RouterLink>
+    </div>
+
     <b-tabs fill justified content-class="mt-3" nav-wrapper-class="w-30">
       <!--------- ATTACK SETTINGS ---------->
       <b-tab title="Attack Settings" active>
