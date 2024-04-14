@@ -308,7 +308,7 @@ export default {
       setTimeout(() => {
         this.showAlert = false;
       }, 5000);
-    }
+    },
   }
 
 }

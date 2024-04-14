@@ -15,6 +15,24 @@ export default new Router({
       name: 'Dashboard',
       component: Dashboard
     },
+    // {
+    //   path: '/attack-settings',
+    //   name: 'AttackSettings',
+    //   component: AttackSettings,
+    //   props: true
+    // },
+    // {
+    //   path: '/previous-attacks',
+    //   name: 'PreviousAttacks',
+    //   component: PreviousAttacks,
+    //   props: true
+    // },
+    // {
+    //   path: '/email-contents',
+    //   name: 'EmailContent',
+    //   component: EmailContent,
+    //   props: true
+    // },
     {
       path: '/',
       name: 'HelloWorld',

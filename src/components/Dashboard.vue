@@ -316,4 +316,8 @@ export default {
 .list-style-none {
   list-style: none;
 }
+
+.gauge-row>.gauge-container {
+  align-items: stretch;
+}
 </style>

@@ -1,41 +1,67 @@
 <template>
-  <div class="mt-5 mx-4">
+  <div>
 
     <!---------- Navigation Bar ----------->
+    <!-- NAVBAR -->
     <div>
+      <!-- Navbar items container -->
+      <div class="custom-nav d-flex">
+        <!-- Company name -->
+        <div class="custom-nav-item company-name ps-2 pe-3">
+          <span class="d-inline-block mt-2">Vedika Corp</span>
+        </div>
+
+        <!-- Attack Settings link -->
+        <div class="custom-nav-item px-2 selectable-item" @click="currentView = 'AttackSettings'">
+          <span class="d-inline-block">Attack Settings</span>
+        </div>
+
+        <!-- Previous Attack link -->
+        <div class="custom-nav-item px-2 selectable-item" @click="currentView = 'PreviousAttacks'">
+          <span class="d-inline-block">Previous Attack</span>
+        </div>
+
+        <!-- Email Contents link -->
+        <div class="custom-nav-item px-2 selectable-item" @click="currentView = 'EmailContents'">
+          <span class="d-inline-block">Email Contents</span>
+        </div>
+
+        <!-- Dashboard link -->
+        <div class="custom-nav-item px-2 selectable-item">
+          <span class="d-inline-block">Dashboard</span>
+        </div>
+      </div>
     </div>
 
-
-
-
-
-
-    <div class="mb-4 ms-auto me-4" style="width: fit-content">
-      <RouterLink to="/dashboard" class="btn btn-primary">Dashboard</RouterLink>
-    </div>
-
-    <b-tabs fill justified content-class="mt-3" nav-wrapper-class="w-30">
-      <!--------- ATTACK SETTINGS ---------->
-      <b-tab title="Attack Settings" active>
+    <!-- Page contents  -->
+    <div class="mt-3 mx-3">
+      <!-- ATTACK SETTINGS  -->
+      <div v-if="currentView === 'AttackSettings'">
         <AttackSettings :email-templates="emailTemplates" :employee-list="employeeList" @createAttack="createNewAttack"
           @createEmployee="createNewEmployee" @createAttackNow="createAttackNow">
 
         </AttackSettings>
-      </b-tab>
+      </div>
 
-
-      <b-tab title="Previous Attacks">
+      <!-- PREVIOUS ATTACK  -->
+      <div v-else-if="currentView === 'PreviousAttacks'">
         <PreviousAttacks :prev-attack-array="prevAttackArray">
 
         </PreviousAttacks>
-      </b-tab>
+      </div>
 
-
-
-      <b-tab title="Email Content">
+      <!-- EMAIL CONTENTS  -->
+      <div v-else-if="currentView === 'EmailContents'">
         <EmailContent :email-templates="emailTemplates" @createNewEmailTemplate="createNewEmailTemplate"></EmailContent>
-      </b-tab>
-    </b-tabs>
+      </div>
+    </div>
+
+
+
+
+    <!-- <div class="mb-4 ms-auto me-4" style="width: fit-content">
+      <RouterLink to="/dashboard" class="btn btn-primary">Dashboard</RouterLink>
+    </div> -->
 
     <div>
       <!-- This is where we show the floating alerts -->
@@ -75,7 +101,9 @@ export default {
 
       // Alert that is displayed when attack creation or email template creation was successful
       displayAlert: false,
-      alertText: ''
+      alertText: '',
+
+      currentView: "AttackSettings"
     }
   },
   created() {
@@ -291,6 +319,40 @@ export default {
 </script>
 
 <style>
+/* Navbar styling */
+.custom-nav {
+  height: 45px;
+  background-color: #877cff;
+  align-items: center;
+}
+
+.custom-nav-item {
+  color: white;
+  font-weight: 600;
+  font-size: 1.4em;
+  cursor: default;
+}
+
+.custom-nav-item.company-name {
+  background-color: #4d3cff;
+  height: 100%;
+}
+
+.custom-nav-item.selectable-item {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.1em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.selectable-item:hover {
+  background-color: #6e60ff;
+}
+
+/* ------------------- */
+
 .prevAttackDate {
   color: C0C0C0;
 }
