@@ -235,10 +235,17 @@ export default {
       // The form is valid
       this.formError = "";
 
+      // prepare the triggerTime
+      let trigTime = new Date(this.attackLaterDate);
+      let timeArr = this.attackLaterTime.split(":");
+      let hrs = parseInt(timeArr[0], 10);
+      let mins = parseInt(timeArr[1], 10);
+      trigTime.setHours(hrs, mins, 0);
+
       let newAttack = {
         name: this.name,
         description: this.description,
-        triggerTime: new Date(this.attackLaterDate),
+        triggerTime: trigTime,
         emailId: this.newTemplateTypeSelected,
         targetRecipients: this.getSelectedTargetRecipients(),
         targetUserIds: this.getSelectedTargetUserIds()
