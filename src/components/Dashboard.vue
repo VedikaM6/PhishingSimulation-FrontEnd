@@ -4,14 +4,14 @@
     <!------- NAVBAR SECTION --------->
     <div class="d-flex align-items-center navbar-container">
       <!-- Dashboard title -->
-      <div class="flex-grow-1 dashboard-title ms-4">
-        <h3>Vedika Corp Dashboard</h3>
+      <div class="flex-grow-1 dashboard-title ms-4 my-2">
+        <h3 class="mb-0">Vedika Corp Dashboard</h3>
       </div>
 
       <!-- Company icon -->
-      <div class="me-4">
+      <!-- <div class="me-4">
         <img src="../../res/vedika_global.jpg" alt="Vedika Corp" width="50" />
-      </div>
+      </div> -->
     </div>
 
     <!------- GAUGES SECTION --------->
@@ -25,7 +25,8 @@
             <h4 class="gauge-title">User Counts</h4>
 
             <span
-              v-if="allGaugeDataMap.UserCounts && allGaugeDataMap.UserCounts.data && allGaugeDataMap.UserCounts.data.length > 0">
+              v-if="allGaugeDataMap.UserCounts && allGaugeDataMap.UserCounts.data && allGaugeDataMap.UserCounts.data.length > 0"
+              class="gauge-content">
               <ul class="list-style-none ps-0">
                 <li v-for="user in allGaugeDataMap.UserCounts.data" class="d-flex justify-content-between">
                   <!-- User name -->
@@ -45,23 +46,26 @@
         <!-- Gauge 2: -->
         <div class="gauge-container">
           <!-- Gauge content -->
-          <div class="m-3">
+          <div class="m-3 h-75">
             <h4 class="gauge-title">Overall Team Performance</h4>
 
-            <span v-if="allGaugeDataMap.TotalTeamPerformance && allGaugeDataMap.TotalTeamPerformance.data">
-              <!-- Show percentage of attacks passed-->
-              <h2>{{
+            <div class="h-100 d-flex align-items-center justify-content-center">
+              <span v-if="allGaugeDataMap.TotalTeamPerformance && allGaugeDataMap.TotalTeamPerformance.data"
+                class="gauge-content d-inline-block">
+                <!-- Show percentage of attacks passed-->
+                <h2>{{
                 roundNum((allGaugeDataMap.TotalTeamPerformance.data.numAttacksPassed /
                   allGaugeDataMap.TotalTeamPerformance.data.totalAttacks) * 100)
               }}%</h2>
 
-              <!-- Show counts of attacks passed-->
-              <p class="me-3">{{ allGaugeDataMap.TotalTeamPerformance.data.numAttacksPassed + '/' +
+                <!-- Show counts of attacks passed-->
+                <p class="me-3">{{ allGaugeDataMap.TotalTeamPerformance.data.numAttacksPassed + '/' +
                 allGaugeDataMap.TotalTeamPerformance.data.totalAttacks }} attacks passed</p>
-            </span>
-            <span v-else>
-              ...
-            </span>
+              </span>
+              <span v-else>
+                ...
+              </span>
+            </div>
           </div>
         </div>
 
@@ -72,7 +76,8 @@
             <h4 class="gauge-title">Email Counts</h4>
 
             <span
-              v-if="allGaugeDataMap.EmailCounts && allGaugeDataMap.EmailCounts.data && allGaugeDataMap.EmailCounts.data.length > 0">
+              v-if="allGaugeDataMap.EmailCounts && allGaugeDataMap.EmailCounts.data && allGaugeDataMap.EmailCounts.data.length > 0"
+              class="gauge-content">
               <ul class="list-style-none ps-0">
                 <li v-for="email in allGaugeDataMap.EmailCounts.data" class="d-flex justify-content-between">
                   <!-- Email name -->
@@ -95,11 +100,12 @@
         <!-- Gauge 1: -->
         <div class="gauge-container">
           <!-- Gauge content -->
-          <div class="gauge-content m-3">
+          <div class="m-3">
             <h4 class="gauge-title">Team Performance Last Week</h4>
 
             <span
-              v-if="allGaugeDataMap.TeamPerformanceLastWeek && allGaugeDataMap.TeamPerformanceLastWeek.data && allGaugeDataMap.TeamPerformanceLastWeek.data.length > 0">
+              v-if="allGaugeDataMap.TeamPerformanceLastWeek && allGaugeDataMap.TeamPerformanceLastWeek.data && allGaugeDataMap.TeamPerformanceLastWeek.data.length > 0"
+              class="gauge-content">
               <ul class="list-style-none ps-0">
                 <li v-for="teamPerf in allGaugeDataMap.TeamPerformanceLastWeek.data"
                   class="d-flex justify-content-between">
@@ -124,7 +130,8 @@
             <h4 class="gauge-title">Scheduled Attacks Next Week</h4>
 
             <span
-              v-if="allGaugeDataMap.ScheduledAttacksNextWeek && allGaugeDataMap.ScheduledAttacksNextWeek.data && allGaugeDataMap.ScheduledAttacksNextWeek.data.length > 0">
+              v-if="allGaugeDataMap.ScheduledAttacksNextWeek && allGaugeDataMap.ScheduledAttacksNextWeek.data && allGaugeDataMap.ScheduledAttacksNextWeek.data.length > 0"
+              class="gauge-content">
               <ul class="list-style-none ps-0">
                 <li v-for="schedAttack in allGaugeDataMap.ScheduledAttacksNextWeek.data"
                   class="d-flex justify-content-between">
@@ -145,11 +152,12 @@
         <!-- Gauge 3: -->
         <div class="gauge-container">
           <!-- Gauge content -->
-          <div class="gauge-content m-3">
+          <div class="m-3">
             <h4 class="gauge-title">Scheduled Attacks For Users</h4>
 
             <span
-              v-if="allGaugeDataMap.ScheduledAttacksForUsers && allGaugeDataMap.ScheduledAttacksForUsers.data && allGaugeDataMap.ScheduledAttacksForUsers.data.length > 0">
+              v-if="allGaugeDataMap.ScheduledAttacksForUsers && allGaugeDataMap.ScheduledAttacksForUsers.data && allGaugeDataMap.ScheduledAttacksForUsers.data.length > 0"
+              class="gauge-content">
               <ul class="list-style-none ps-0">
                 <li v-for="user in allGaugeDataMap.ScheduledAttacksForUsers.data"
                   class="d-flex justify-content-between">
@@ -277,7 +285,6 @@ export default {
 }
 
 .gauge-container {
-  border: 1px solid black;
   flex: 1;
   height: 100%;
   overflow-y: hidden;
@@ -286,7 +293,6 @@ export default {
 }
 
 .gauge-container>div {
-  border: 1px solid red;
   vertical-align: middle;
 }
 
@@ -303,6 +309,8 @@ export default {
   flex-shrink: 1,
   flex-basis: auto
   */
+  background: rgb(230, 232, 255);
+  background: linear-gradient(83deg, rgba(230, 232, 255, 1) 0%, rgba(132, 188, 255, 1) 100%);
 }
 
 .page-container .rows-container {
@@ -319,5 +327,19 @@ export default {
 
 .gauge-row>.gauge-container {
   align-items: stretch;
+}
+
+.gauge-container {
+  border: 2px solid rgb(175, 175, 255);
+  background: rgb(230, 232, 255);
+  background: linear-gradient(83deg, rgba(230, 232, 255, 1) 0%, rgba(225, 239, 255, 1) 2%);
+}
+
+.gauge-content {
+  font-size: 1.1em;
+}
+
+.h-75 {
+  height: 75% !important;
 }
 </style>

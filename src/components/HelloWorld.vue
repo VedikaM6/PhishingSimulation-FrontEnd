@@ -12,23 +12,42 @@
         </div>
 
         <!-- Attack Settings link -->
-        <div class="custom-nav-item px-2 selectable-item" @click="currentView = 'AttackSettings'">
+        <div
+          :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'AttackSettings' }]"
+          @click="currentView = 'AttackSettings'">
           <span class="d-inline-block">Attack Settings</span>
         </div>
 
+        <div class="navbar-item-divider">|</div>
+
         <!-- Previous Attack link -->
-        <div class="custom-nav-item px-2 selectable-item" @click="currentView = 'PreviousAttacks'">
+        <div
+          :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'PreviousAttacks' }]"
+          @click="currentView = 'PreviousAttacks'">
           <span class="d-inline-block">Previous Attack</span>
         </div>
 
+        <div class="navbar-item-divider">|</div>
+
         <!-- Email Contents link -->
-        <div class="custom-nav-item px-2 selectable-item" @click="currentView = 'EmailContents'">
+        <div
+          :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'EmailContents' }]"
+          @click="currentView = 'EmailContents'">
           <span class="d-inline-block">Email Contents</span>
         </div>
 
+        <div class="navbar-item-divider">|</div>
+
         <!-- Dashboard link -->
         <div class="custom-nav-item px-2 selectable-item">
-          <span class="d-inline-block">Dashboard</span>
+          <!-- <RouterLink to="/dashboard" class="d-inline-block dashboard-link">Dashboard</RouterLink> -->
+          <a href="http://localhost:8080/#/dashboard" target="_blank"
+            class="d-inline-block dashboard-link">Dashboard&nbsp;</a>
+          <external-link-icon size="1x" class="dash-icon"></external-link-icon>
+        </div>
+
+        <div class="ms-auto me-3">
+          <user-icon size="1.5x" class="user-icon"></user-icon>
         </div>
       </div>
     </div>
@@ -79,6 +98,7 @@ import PreviousAttacks from "./PreviousAttacks.vue";
 import EmailContent from "./EmailContent.vue";
 import axios from 'axios';
 import { RouterView } from "vue-router";
+import { UserIcon, ExternalLinkIcon } from 'vue-feather-icons'
 
 let api = axios.create({
   baseURL: 'http://localhost:80'
@@ -89,7 +109,9 @@ export default {
   components: {
     AttackSettings,
     PreviousAttacks,
-    EmailContent
+    EmailContent,
+    UserIcon,
+    ExternalLinkIcon
   },
   data() {
     return {
@@ -351,6 +373,15 @@ export default {
   background-color: #6e60ff;
 }
 
+.selected-item {
+  background-color: #6e60ff;
+}
+
+.dashboard-link {
+  text-decoration: none;
+  color: white;
+}
+
 /* ------------------- */
 
 .prevAttackDate {
@@ -378,5 +409,19 @@ export default {
   margin-right: 0%;
   width: 30%;
   text-align: center;
+}
+
+.user-icon {
+  color: white;
+  cursor: pointer;
+}
+
+.dash-icon {
+  color: white;
+}
+
+.navbar-item-divider {
+  font-size: 1.5em;
+  color: white;
 }
 </style>
