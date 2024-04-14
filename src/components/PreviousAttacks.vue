@@ -1,15 +1,15 @@
 <template>
   <div>
-    <p>This is a list of all the previous attacks that have occurred. Click on an row to get more information</p>
+
+    <!-- Tab Description for users -->
+    <h5> Lists out past completed attacks. Click on a row to get more information</h5>
+    <hr>
 
     <div class="d-flex mb-8">
-      <!-- Descrition of tab -->
-
-
       <!-- Left side -->
       <!-- List of all the attacks in a table -->
       <div class="w-50 mx-2 px-2">
-        <b-table striped hover :fields="['name', 'triggerTime']" :items="modifiedPrevAttackArray"
+        <b-table noCollapse striped hover :fields="['name', 'triggerTime']" :items="modifiedPrevAttackArray"
           @row-clicked="rowClicked">
           <template #cell()="data">
             {{ data.value }}
@@ -24,7 +24,8 @@
           <b-card-text>
             <!-- Attack info stacked table -->
             <div>
-              <b-table stacked :items="[selectedAttack]" :fields="['description', 'emailTemplate']">
+              <b-table stacked :items="[selectedAttack]" :fields="['description', 'emailTemplate']"
+                class="prev-attack-info">
                 <!-- <b-table :items="selectedAttack.targetRecipients" :fields="['name', 'isClicked']" class="w-25">
                   <template #cell(isClicked)="data">
                     <b-form-checkbox v-model="data.item.isClicked"></b-form-checkbox>
@@ -35,8 +36,9 @@
 
             <!-- Targeted employees table -->
             <div class="mt-4">
-              <b-table :items="selectedAttack.targetRecipients" :fields="['name', 'clickedTime']"
-                :tbody-tr-class="rowClass">
+              <h6 style="font-weight: bold;">List of Employees Involved: </h6>
+              <b-table small :items="selectedAttack.targetRecipients" :fields="['name', 'clickedTime']"
+                :tbody-tr-class="rowClass" class="text-align-center">
                 <template #cell(clickedTime)="data">
                   {{ getUserFriendlyClickedTime(data.item.clickedTime, data.item.isClicked) }}
                 </template>
@@ -137,3 +139,19 @@ export default {
 
 }
 </script>
+
+<style>
+/* Style for the stacked b-table headers */
+.b-table.b-table-stacked.prev-attack-info>tbody>tr>td::before {
+  width: 30% !important;
+}
+
+/* Style for the stacked b-table data */
+.b-table.b-table-stacked.prev-attack-info>tbody>tr>td>div {
+  width: 70% !important;
+}
+
+.text-align-center {
+  text-align: center;
+}
+</style>

@@ -1,5 +1,15 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-5 mx-4">
+
+    <!---------- Navigation Bar ----------->
+    <div>
+    </div>
+
+
+
+
+
+
     <div class="mb-4 ms-auto me-4" style="width: fit-content">
       <RouterLink to="/dashboard" class="btn btn-primary">Dashboard</RouterLink>
     </div>
@@ -26,6 +36,13 @@
         <EmailContent :email-templates="emailTemplates" @createNewEmailTemplate="createNewEmailTemplate"></EmailContent>
       </b-tab>
     </b-tabs>
+
+    <div>
+      <!-- This is where we show the floating alerts -->
+      <b-alert v-model="displayAlert" fade class="floatingAlert">
+        {{ alertText }}
+      </b-alert>
+    </div>
   </div>
 
 </template>
@@ -35,6 +52,7 @@ import AttackSettings from "./AttackSettings.vue";
 import PreviousAttacks from "./PreviousAttacks.vue";
 import EmailContent from "./EmailContent.vue";
 import axios from 'axios';
+import { RouterView } from "vue-router";
 
 let api = axios.create({
   baseURL: 'http://localhost:80'
@@ -54,6 +72,10 @@ export default {
       prevAttackArray: [],
       employeeList: [],
       emailTemplates: [],
+
+      // Alert that is displayed when attack creation or email template creation was successful
+      displayAlert: false,
+      alertText: ''
     }
   },
   created() {
@@ -174,6 +196,10 @@ export default {
             console.log(e);
           }
         });
+
+      // Display the successful alert to let user know their attack was created
+      this.alertText = 'Attack was successfully created';
+      this.displayFloatingAlert();
     },
     // Function that handles future attacks 
     createNewAttack(newAttackObj) {
@@ -195,6 +221,10 @@ export default {
             console.log(e);
           }
         });
+
+      // Display the successful alert to let user know their scheduled attack was created
+      this.alertText = 'Attack was successfully scheduled';
+      this.displayFloatingAlert();
     },
     createNewEmployee(newEmployeeObj) {
       let config = {
@@ -241,6 +271,19 @@ export default {
             console.log(e);
           }
         });
+
+      // Display the successful alert to let user know email template was successfully created
+      this.alertText = 'Email template was successfully created';
+      this.displayFloatingAlert();
+    },
+    // Display the floating alert to let user's know if their attack was created successfully OR email template was created successfully
+    displayFloatingAlert() {
+      this.displayAlert = true;
+      setTimeout(() => {
+        // After 5 sec alert should not be displayed, and alert text will be empty
+        this.displayAlert = false;
+        this.alertText = '';
+      }, 5000);
     }
 
   }
@@ -264,18 +307,14 @@ export default {
 .left-container {
   display: flex;
   flex-wrap: wrap;
-}
-
-.left-container {
   width: calc(50% - 10px);
   margin: 10px;
 }
 
-.w-20 {
-  width: 20%;
-}
-
-.w-40 {
-  width: 40%;
+.floatingAlert {
+  margin-left: auto;
+  margin-right: 0%;
+  width: 30%;
+  text-align: center;
 }
 </style>

@@ -1,32 +1,35 @@
 <template>
   <div>
 
+    <!-- Tab Description for users -->
+    <h5> Create your own phishing attacks </h5>
+    <hr>
 
     <div class="d-flex mb-8">
       <!-- LEFT SIDE -->
       <div class="w-50 mx-2 px-2">
         <!-- Attack name -->
         <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-20">Attack Name: </label>
+          <label class="me-2 align-self-center w-30">Attack Name: </label>
           <b-form-input type="text" v-model="name"></b-form-input>
         </div>
 
         <!-- Attack Description -->
         <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-20">Attack Description: </label>
+          <label class="me-2 align-self-center w-30">Attack Description: </label>
           <b-form-textarea type="text" v-model="description"></b-form-textarea>
         </div>
 
         <!-- Email Templates to choose from -->
         <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-20">Email Template: </label>
+          <label class="me-2 align-self-center w-30">Email Template: </label>
           <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates" value-field="_id" text-field="name"
             class="form-select"></b-form-select></br>
         </div>
 
         <!-- Attack now or later radio button -->
         <div class="d-flex mb-3">
-          <div class="d-flex mb-3"> Attack When: </div>
+          <div class="d-flex mb-3 w-30"> Attack When: </div>
           <div class="d-flex mb-3">
             <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackNow"></b-form-radio>
             <label class="me-2 align-self-center"> Attack Now </label>
@@ -38,13 +41,13 @@
         <!-- Attack date -->
         <div v-if="attackNowOrLaterRadio.includes('attackLater')">
           <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Attack Date: </label>
+            <label class="me-2 align-self-center w-30">Attack Date: </label>
             <b-form-datepicker v-model="attackLaterDate"></b-form-datepicker>
           </div>
 
           <!-- Attack time -->
           <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Attack Time: </label>
+            <label class="me-2 align-self-center w-30">Attack Time: </label>
             <b-form-timepicker v-model="attackLaterTime" locale="en"></b-form-timepicker>
           </div>
 
@@ -68,9 +71,10 @@
       <div class="w-50 mx-2">
         <p>Employee List</p>
         <div>
-          <b-table striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']">
+          <b-table noCollapse striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']"
+            class="text-align-center">
             <template #cell(isSelected)="data">
-              <b-form-checkbox v-model="data.item.isSelected"></b-form-checkbox>
+              <b-form-checkbox v-model="data.item.isSelected" class="text-align-center"></b-form-checkbox>
             </template>
           </b-table>
 
@@ -101,12 +105,6 @@
 
           </b-modal>
         </div>
-      </div>
-      <div>
-        <!-- This is where we show the floating alerts -->
-        <b-alert v-model="showAlert" fade>
-          {{ alertMessage }}
-        </b-alert>
       </div>
     </div>
 
@@ -248,9 +246,6 @@ export default {
 
       // emit an event to the parent to create this attack
       this.$emit("createAttack", newAttack);
-
-      // Display the successful alert
-      this.displayFloatingAlert();
     },
     getSelectedTargetRecipients() {
       let res = [];
@@ -318,3 +313,17 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.w-30 {
+  width: 30%;
+}
+
+.w-40 {
+  width: 40%;
+}
+
+.text-align-center {
+  text-align: center;
+}
+</style>

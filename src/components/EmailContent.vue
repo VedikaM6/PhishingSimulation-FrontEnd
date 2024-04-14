@@ -1,68 +1,75 @@
 <template>
-  <div class="d-flex mb-8">
-    <!-- LEFT SIDE -->
-    <!-- Displaying a list of all emaill templates in db -->
-    <div class="w-50 mx-2 px-2">
-      <p>List of all email templates</p>
-      <div>
-        <b-table striped hover :items="localEmailTemplates" :fields="['name', 'type', 'subject']"
-          @row-clicked="emailTemplateRowClicked">
-        </b-table>
+  <div>
+
+    <!-- Tab Description for users -->
+    <h5> Create your own phishing attack email templates</h5>
+    <hr>
+
+    <div class="d-flex mb-8">
+      <!-- LEFT SIDE -->
+      <!-- Displaying a list of all emaill templates in db -->
+      <div class="w-50 mx-2 px-2">
+        <p>List of all email templates</p>
+        <div>
+          <b-table noCollapse striped hover :items="localEmailTemplates" :fields="['name', 'type', 'subject']"
+            @row-clicked="emailTemplateRowClicked">
+          </b-table>
+        </div>
+        <!-- Button that opens up a modal to create a new email template -->
+        <div>
+          <b-button block v-b-modal.modal-2>Create New Template</b-button>
+          <b-modal ref="newTemplateModal" id="modal-2" hide-footer>
+            <template #modal-header="{ close }">
+              <h5 class="mb-0">New Email Template</h5>
+            </template>
+
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Name: </label>
+              <b-form-input v-model="name" type="text" class="mx-2"></b-form-input></br>
+            </div>
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Type: </label>
+              <b-form-select v-model="newTemplateTypeSelected" :options="emailTypeOptions"
+                class="form-select mx-2"></b-form-select></br>
+            </div>
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Company: </label>
+              <b-form-input v-model="company" type="text" class="mx-2"></b-form-input></br>
+            </div>
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Subject: </label>
+              <b-form-input v-model="subject" type="text" class="mx-2"></b-form-input></br>
+            </div>
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-20">Body: </label>
+              <b-form-textarea v-model="body" type="text" class="mx-2"></b-form-textarea>
+            </div>
+            <b-button class="mt-3" @click="createNewTemplate">Create Template</b-button>
+            <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
+
+            <!-- Displaying alert in modal if any fields are empty when clicking 'Create Template' button -->
+            <b-alert variant="danger" :show="newTemplateError !== ''">
+              {{ newTemplateError }}
+            </b-alert>
+
+
+          </b-modal>
+        </div>
       </div>
-      <!-- Button that opens up a modal to create a new email template -->
-      <div>
-        <b-button block v-b-modal.modal-2>Create New Template</b-button>
-        <b-modal ref="newTemplateModal" id="modal-2" hide-footer>
-          <template #modal-header="{ close }">
-            <h5 class="mb-0">New Email Template</h5>
-          </template>
 
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Name: </label>
-            <b-form-input v-model="name" type="text" class="mx-2"></b-form-input></br>
-          </div>
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Type: </label>
-            <b-form-select v-model="newTemplateTypeSelected" :options="emailTypeOptions"
-              class="form-select mx-2"></b-form-select></br>
-          </div>
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Company: </label>
-            <b-form-input v-model="company" type="text" class="mx-2"></b-form-input></br>
-          </div>
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Subject: </label>
-            <b-form-input v-model="subject" type="text" class="mx-2"></b-form-input></br>
-          </div>
-          <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-20">Body: </label>
-            <b-form-textarea v-model="body" type="text" class="mx-2"></b-form-textarea>
-          </div>
-          <b-button class="mt-3" @click="createNewTemplate">Create Template</b-button>
-          <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
-
-          <!-- Displaying alert in modal if any fields are empty when clicking 'Create Template' button -->
-          <b-alert variant="danger" :show="newTemplateError !== ''">
-            {{ newTemplateError }}
-          </b-alert>
-
-
-        </b-modal>
+      <!-- Right Side -->
+      <!-- Displays more detail about the email template selected by user -->
+      <div class="w-50 mx-2 px-2" v-show="isVisibleEmail">
+        <b-card :title=selectedEmailTemplate.name :sub-title=selectedEmailTemplate.type>
+          <b-card-text>
+            <div>
+              <b-table id="email-template-info" stacked :items="[selectedEmailTemplate]"
+                :fields="['company', 'subject', 'body']" style="white-space: pre-wrap; text-align: left;">
+              </b-table>
+            </div>
+          </b-card-text>
+        </b-card>
       </div>
-    </div>
-
-    <!-- Right Side -->
-    <!-- Displays more detail about the email template selected by user -->
-    <div class="w-50 mx-2 px-2" v-show="isVisibleEmail">
-      <b-card :title=selectedEmailTemplate.name :sub-title=selectedEmailTemplate.type>
-        <b-card-text>
-          <div>
-            <b-table id="email-template-info" stacked :items="[selectedEmailTemplate]"
-              :fields="['company', 'subject', 'body']" style="white-space: pre-wrap; text-align: left;">
-            </b-table>
-          </div>
-        </b-card-text>
-      </b-card>
     </div>
   </div>
 </template>
@@ -212,5 +219,9 @@ export default {
 
 .mb-8 {
   margin-bottom: 5em;
+}
+
+.w-20 {
+  width: 20%;
 }
 </style>

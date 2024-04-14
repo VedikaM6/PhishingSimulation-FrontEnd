@@ -96,15 +96,49 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="gauge-content m-3">
-            {{ allGaugeDataMap.Gauge4 ? allGaugeDataMap.Gauge4.data : "..." }}
+            <h4 class="gauge-title">Team Performance Last Week</h4>
+
+            <span
+              v-if="allGaugeDataMap.TeamPerformanceLastWeek && allGaugeDataMap.TeamPerformanceLastWeek.data && allGaugeDataMap.TeamPerformanceLastWeek.data.length > 0">
+              <ul class="list-style-none ps-0">
+                <li v-for="teamPerf in allGaugeDataMap.TeamPerformanceLastWeek.data"
+                  class="d-flex justify-content-between">
+                  <!-- Attack date -->
+                  <p class="ms-3">{{ convertTimeObjToDateStr(teamPerf.id) }}</p>
+
+                  <!-- Team performance stat -->
+                  <p class="me-3">{{ teamPerf.numAttacksPassed + '/' + teamPerf.totalAttacks }}</p>
+                </li>
+              </ul>
+            </span>
+            <span v-else>
+              ...
+            </span>
           </div>
         </div>
 
         <!-- Gauge 2: -->
         <div class="gauge-container">
           <!-- Gauge content -->
-          <div class="d-inline-block m-3">
-            {{ allGaugeDataMap.Gauge4 ? allGaugeDataMap.Gauge4.data : "..." }}
+          <div class="m-3">
+            <h4 class="gauge-title">Scheduled Attacks Next Week</h4>
+
+            <span
+              v-if="allGaugeDataMap.ScheduledAttacksNextWeek && allGaugeDataMap.ScheduledAttacksNextWeek.data && allGaugeDataMap.ScheduledAttacksNextWeek.data.length > 0">
+              <ul class="list-style-none ps-0">
+                <li v-for="schedAttack in allGaugeDataMap.ScheduledAttacksNextWeek.data"
+                  class="d-flex justify-content-between">
+                  <!-- Manth and day of scheduled attack -->
+                  <p class="ms-3">{{ convertTimeObjToDateStr(schedAttack.id) }}</p>
+
+                  <!-- Number of attacks to perform for each day -->
+                  <p class="me-3">{{ schedAttack.totalAttacks }}</p>
+                </li>
+              </ul>
+            </span>
+            <span v-else>
+              ...
+            </span>
           </div>
         </div>
 
@@ -112,7 +146,24 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="gauge-content m-3">
-            {{ allGaugeDataMap.Gauge4 ? allGaugeDataMap.Gauge4.data : "..." }}
+            <h4 class="gauge-title">Scheduled Attacks For Users</h4>
+
+            <span
+              v-if="allGaugeDataMap.ScheduledAttacksForUsers && allGaugeDataMap.ScheduledAttacksForUsers.data && allGaugeDataMap.ScheduledAttacksForUsers.data.length > 0">
+              <ul class="list-style-none ps-0">
+                <li v-for="user in allGaugeDataMap.ScheduledAttacksForUsers.data"
+                  class="d-flex justify-content-between">
+                  <!-- User name -->
+                  <p class="ms-3">{{ user.id }}</p>
+
+                  <!-- User stats -->
+                  <p class="me-3">{{ user.totalAttacks }}</p>
+                </li>
+              </ul>
+            </span>
+            <span v-else>
+              ...
+            </span>
           </div>
         </div>
       </div>
@@ -142,6 +193,11 @@ export default {
       // this object contains a property for each gauge type
       //allGaugeDataMap: {}
 
+      shortMonthNames: [
+        "Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sept", "Oct", "Nov", "Dec",
+      ]
     }
   },
   created() {
@@ -203,6 +259,11 @@ export default {
     /* Round the given number to 2 decimal places */
     roundNum(n) {
       return Math.round((n * 100) / 100);
+    },
+    /* Convert the 'time object' (used for some gauge types) to a date string to display */
+    convertTimeObjToDateStr(timeObj) {
+      // NOTE: 'timeObj' is in the format: {year: 2024, month: 4, day: 12}
+      return this.shortMonthNames[timeObj.month - 1] + " " + timeObj.day;
     }
   }
 }
