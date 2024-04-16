@@ -7,6 +7,11 @@ import router from './router'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+// import { BToast } from 'bootstrap-vue'
+// Vue.component('b-toast', BToast)
+import { ToastPlugin } from 'bootstrap-vue'
+Vue.use(ToastPlugin)
+
 
 
 Vue.config.productionTip = false

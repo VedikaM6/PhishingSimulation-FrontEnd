@@ -47,10 +47,11 @@
             <b-button class="mt-3" @click="createNewTemplate">Create Template</b-button>
             <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
 
-            <!-- Displaying alert in modal if any fields are empty when clicking 'Create Template' button -->
-            <b-alert variant="danger" :show="newTemplateError !== ''">
-              {{ newTemplateError }}
-            </b-alert>
+            <!-- Toast for errors -->
+            <b-toast id="template-error-toast" :title="templateToast.title" auto-hide-delay="5000"
+              :variant="templateToast.variant">
+              {{ templateToast.content }}
+            </b-toast>
 
 
           </b-modal>
@@ -123,10 +124,25 @@ export default {
       body: "",
 
       // contains an error message if the form is invalid
-      newTemplateError: ""
+      newTemplateError: "",
+      templateToast: {
+        title: "",
+        content: "",
+        variant: "danger"
+      },
     }
   },
   methods: {
+    showToast(toastId, title, toastText, vari) {
+      if (toastId === "template-error-toast") {
+        this.templateToast = {
+          title: title,
+          content: toastText,
+          variant: vari
+        }
+        this.$bvToast.show(toastId);
+      }
+    },
     // Stores the selected email template into an object that is then displayed in depth on the right side
     emailTemplateRowClicked(item, i, ev) {
       // Make sure 'isVisibleEmail' is set to 'true' to be able to see the <b-card> component when user slected a row from the table
@@ -150,31 +166,38 @@ export default {
       if (!this.name) {
         // Email name is empty
         this.newTemplateError = "Please specify a name.";
+        this.showToast('template-error-toast', "Error", this.newTemplateError, "danger");
         return;
       } else if (!this.newTemplateTypeSelected) {
         // Email Template is empty
         this.newTemplateError = "Please select an email template.";
+        this.showToast('template-error-toast', "Error", this.newTemplateError, "danger");
         return;
       } else if (!this.company) {
         // Email company is empty
         this.newTemplateError = "Please specify a email template company.";
+        this.showToast('template-error-toast', "Error", this.newTemplateError, "danger");
         return;
       } else if (!this.subject) {
         // Email subject is empty
         this.newTemplateError = "Please specify the email subject.";
+        this.showToast('template-error-toast', "Error", this.newTemplateError, "danger");
         return;
       } else if (!this.body) {
         // Email body is empty
         this.newTemplateError = "Please specify the email body.";
+        this.showToast('template-error-toast', "Error", this.newTemplateError, "danger");
         return;
       } else if (this.body.search(/\[\[[A-Za-z]+\]\]/) === -1) {
         // Email body is missing placeholder for phishing link
         this.newTemplateError = "The email body must contain a placeholder for the phishing link. Please enclose some text in double square brackets";
+        this.showToast('template-error-toast', "Error", this.newTemplateError, "danger");
         return;
       }
 
       // This form is valid
       this.newTemplateError = "";
+      this.showToast('template-error-toast', "Success", "Successfully created new template!", "success");
 
       // Set new email template object with all values entered by user to send as request body
       let newEmailTemplate = {

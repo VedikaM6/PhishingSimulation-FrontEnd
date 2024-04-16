@@ -5,9 +5,8 @@
     <h5> Create your own phishing attacks </h5>
     <hr>
 
-    <div class="d-flex mb-8">
-      <!-- LEFT SIDE -->
-      <div class="w-50 mx-2 px-2">
+    <div class="mb-8 page-container mx-auto">
+      <div class="mx-2 px-2">
         <!-- Attack name -->
         <div class="d-flex mb-3">
           <label class="me-2 align-self-center w-30">Attack Name: </label>
@@ -19,6 +18,49 @@
           <label class="me-2 align-self-center w-30">Attack Description: </label>
           <b-form-textarea type="text" v-model="description"></b-form-textarea>
         </div>
+
+        <!-- Table that lists out all the employees from the db -->
+
+        <p class="d-flex">Select at Least 1 Employee: </p>
+        <!-- Button that opens up a modal to add new employees -->
+        <div class="d-flex">
+          <b-button block v-b-modal.modal-1 variant="primary">Add Employee</b-button>
+          <b-modal ref="addNewEmployeeModal" id="modal-1" hide-footer>
+            <template #modal-header="{ close }">
+              <h5 class="mb-0">Add Employee</h5>
+            </template>
+
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-40">Employee Name: </label>
+              <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>
+            </div>
+            <div class="d-flex mb-3">
+              <label class="me-2 align-self-center w-40">Employee Email: </label>
+              <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
+            </div>
+            <b-button class="mt-3" @click="addNewEmployee" variant="primary">Add Employee</b-button>
+            <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
+
+            <!-- Toast for errors -->
+            <b-toast id="new-employee-error-toast" :title="newEmployeeToast.title" auto-hide-delay="5000"
+              :variant="newEmployeeToast.variant">
+              {{ newEmployeeToast.content }}
+            </b-toast>
+
+          </b-modal>
+        </div>
+        <div>
+          <b-table noCollapse striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']"
+            class="text-align-center">
+            <template #cell(isSelected)="data">
+              <b-form-checkbox v-model="data.item.isSelected" class="text-align-center"></b-form-checkbox>
+            </template>
+          </b-table>
+
+        </div>
+
+
+
 
         <!-- Email Templates to choose from -->
         <div class="d-flex mb-3">
@@ -52,60 +94,20 @@
           </div>
 
           <!-- 'Schedule Attack' button apears when user selects to attack later radio button -->
-          <b-button @click="scheduleFutureAttack">Schedule Attack</b-button>
+          <b-button @click="scheduleFutureAttack" variant="primary" class="w-100">Schedule Attack</b-button>
         </div>
         <div v-else>
           <!-- 'Attack Now' button is displayed when user selects to attack now radio button -->
-          <b-button @click="scheduleAttackNow">Attack Now</b-button>
+          <b-button @click="scheduleAttackNow" variant="primary" class="w-100">Attack Now</b-button>
         </div></br>
 
-        <div>
-          <b-alert variant="danger" :show="formError !== ''">
-            {{ formError }}
-          </b-alert>
-        </div>
+        <!-- Toast for errors -->
+        <b-toast id="attack-error-toast" :title="attackSettingsToast.title" auto-hide-delay="5000"
+          :variant="attackSettingsToast.variant">
+          {{ attackSettingsToast.content }}
+        </b-toast>
       </div>
 
-      <!-- RIGHT SIDE -->
-      <!-- Table that lists out all the employees from the db -->
-      <div class="w-50 mx-2">
-        <p>Employee List</p>
-        <div>
-          <b-table noCollapse striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']"
-            class="text-align-center">
-            <template #cell(isSelected)="data">
-              <b-form-checkbox v-model="data.item.isSelected" class="text-align-center"></b-form-checkbox>
-            </template>
-          </b-table>
-
-        </div>
-
-        <!-- Button that opens up a modal to add new employees -->
-        <div>
-          <b-button block v-b-modal.modal-1>Add Employee</b-button>
-          <b-modal ref="addNewEmployeeModal" id="modal-1" hide-footer>
-            <template #modal-header="{ close }">
-              <h5 class="mb-0">Add Employee</h5>
-            </template>
-
-            <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-40">Employee Name: </label>
-              <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>
-            </div>
-            <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-40">Employee Email: </label>
-              <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
-            </div>
-            <b-button class="mt-3" @click="addNewEmployee">Add Employee</b-button>
-            <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
-
-            <b-alert variant="danger" :show="formErrorNewEmployee !== ''">
-              {{ formErrorNewEmployee }}
-            </b-alert>
-
-          </b-modal>
-        </div>
-      </div>
     </div>
 
 
@@ -130,6 +132,11 @@ export default {
 
       // contains an error message if the form is invalid
       formError: "",
+      attackSettingsToast: {
+        title: "",
+        content: "",
+        variant: "danger"
+      },
 
       attackNowOrLaterRadio: 'attackNow',
 
@@ -140,6 +147,11 @@ export default {
 
       // contains an error message if the new employee form is invalid
       formErrorNewEmployee: "",
+      newEmployeeToast: {
+        title: "",
+        content: "",
+        variant: "danger"
+      },
 
       // Alert that is displayed when attack creation was successful
       showAlert: false,
@@ -150,7 +162,15 @@ export default {
     employeeList(newVal, oldVal) {
       console.log("[watch][employeelist] Employees updated!");
       this.localEmployeeList = JSON.parse(JSON.stringify(newVal))
-    }
+    },
+    /* Watch for formError changes. */
+    // formError(newVal, oldVal) {
+    //   if (newVal) {
+    //     console.log("[formError] Triggered!");
+    //     // There is an error so show the toast error message.
+    //     this.$bvToast.show('error-toast');
+    //   }
+    // }
   },
   computed: {
     selectedUsers() {
@@ -166,24 +186,45 @@ export default {
     }
   },
   methods: {
+    showToast(toastId, title, toastText, vari) {
+      if (toastId === "attack-error-toast") {
+        this.attackSettingsToast = {
+          title: title,
+          content: toastText,
+          variant: vari
+        }
+        this.$bvToast.show(toastId);
+      } else if (toastId === "new-employee-error-toast") {
+        this.newEmployeeToast = {
+          title: title,
+          content: toastText,
+          variant: vari
+        }
+        this.$bvToast.show(toastId);
+      }
+    },
     scheduleAttackNow() {
       console.log("[scheduleAttackNow] Hit.");
       // validate form information
       if (!this.name) {
         // Name is empty
         this.formError = "Please specify a name.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (!this.description) {
         // Description is empty
         this.formError = "Please specify a description.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (!this.newTemplateTypeSelected) {
         // Email Template is empty
         this.formError = "Please select an email template.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (this.selectedUsers.length === 0) {
         // Selected users is empty
         this.formError = "Please select at least 1 user.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       }
 
@@ -201,7 +242,8 @@ export default {
       this.$emit("createAttackNow", newAttack)
 
       // Display the successful alert
-      this.displayFloatingAlert();
+      //this.displayFloatingAlert();
+      this.showToast("attack-error-toast", "Success", "Successfully sent attack!", "success");
     },
     scheduleFutureAttack() {
       console.log("[scheduleFutureAttack] Hit.");
@@ -209,31 +251,38 @@ export default {
       if (!this.name) {
         // Name is empty
         this.formError = "Please specify a name.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (!this.description) {
         // Description is empty
         this.formError = "Please specify a description.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (!this.newTemplateTypeSelected) {
         // Email Template is empty
         this.formError = "Please select an email template.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (!this.attackLaterDate || new Date(this.attackLaterDate) < new Date()) {
         // Date is invalid (empty or in the past)
         this.formError = "The date is empty or in the past.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (!this.attackLaterTime) {
         // Time is empty
         this.formError = "Please specify a time.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       } else if (this.selectedUsers.length === 0) {
         // Selected users is empty
         this.formError = "Please select at least 1 user.";
+        this.showToast("attack-error-toast", "Error", this.formError, "danger");
         return;
       }
 
       // The form is valid
       this.formError = "";
+      this.showToast("attack-error-toast", "Success", "Successfully scheduled attack!", "success");
 
       // prepare the triggerTime
       let trigTime = new Date(this.attackLaterDate);
@@ -281,15 +330,19 @@ export default {
       if (!this.newEmployeeName) {
         // Employee name is empty
         this.formErrorNewEmployee = "Please specify employee's name.";
+        this.$bvToast.show('new-employee-error-toast');
+        this.showToast("new-employee-error-toast", "Error", this.formErrorNewEmployee, "danger");
         return;
       } else if (!this.newEmployeeEmail) {
         // Employee email is empty
         this.formErrorNewEmployee = "Please specify employee's email.";
+        this.showToast("new-employee-error-toast", "Error", this.formErrorNewEmployee, "danger");
         return;
       }
 
       // Validation completed
       this.formErrorNewEmployee = "";
+      this.showToast("new-employee-error-toast", "Success", "Successfully created new employee!", "success");
 
       let newEmployee = {
         name: this.newEmployeeName,
@@ -332,5 +385,10 @@ export default {
 
 .text-align-center {
   text-align: center;
+}
+
+.page-container {
+  width: 50%;
+
 }
 </style>

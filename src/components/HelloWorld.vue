@@ -83,10 +83,7 @@
     </div> -->
 
     <div>
-      <!-- This is where we show the floating alerts -->
-      <b-alert v-model="displayAlert" fade class="floatingAlert">
-        {{ alertText }}
-      </b-alert>
+
     </div>
   </div>
 
