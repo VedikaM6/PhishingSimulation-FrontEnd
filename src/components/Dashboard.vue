@@ -4,12 +4,12 @@
     <!------- NAVBAR SECTION --------->
     <div class="d-flex align-items-center navbar-container">
       <!-- Dashboard title -->
-      <div class="flex-grow-1 dashboard-title ms-4 my-2">
+      <div class="flex-grow-1 dashboard-title ml-3 my-2">
         <h3 class="mb-0">Vedika Corp Dashboard</h3>
       </div>
 
       <!-- Company icon -->
-      <!-- <div class="me-4">
+      <!-- <div class="mr-3">
         <img src="../../res/vedika_global.jpg" alt="Vedika Corp" width="50" />
       </div> -->
     </div>
@@ -22,18 +22,19 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="m-3">
-            <h4 class="gauge-title">User Counts</h4>
+            <h4 class="gauge-title mb-0">User Performance</h4>
+            <p class="gauge-description">How many emails were properly identified as phishing by each user.</p>
 
             <span
               v-if="allGaugeDataMap.UserCounts && allGaugeDataMap.UserCounts.data && allGaugeDataMap.UserCounts.data.length > 0"
               class="gauge-content">
-              <ul class="list-style-none ps-0">
+              <ul class="list-style-none pl-0">
                 <li v-for="user in allGaugeDataMap.UserCounts.data" class="d-flex justify-content-between">
                   <!-- User name -->
-                  <p class="ms-3">{{ user.userName }}</p>
+                  <p class="ml-2">{{ user.userName }}</p>
 
                   <!-- User stats -->
-                  <p class="me-3">{{ user.numAttacksPassed + '/' + user.totalAttacks }}</p>
+                  <p class="ml-2">{{ user.numAttacksPassed + '/' + user.totalAttacks }}</p>
                 </li>
               </ul>
             </span>
@@ -47,7 +48,8 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="m-3 h-75">
-            <h4 class="gauge-title">Overall Team Performance</h4>
+            <h4 class="gauge-title mb-0">Overall Team Performance</h4>
+            <p class="gauge-description">How many emails were properly identified as phishing by all users.</p>
 
             <div class="h-100 d-flex align-items-center justify-content-center">
               <span v-if="allGaugeDataMap.TotalTeamPerformance && allGaugeDataMap.TotalTeamPerformance.data"
@@ -59,7 +61,7 @@
               }}%</h2>
 
                 <!-- Show counts of attacks passed-->
-                <p class="me-3">{{ allGaugeDataMap.TotalTeamPerformance.data.numAttacksPassed + '/' +
+                <p class="mr-2">{{ allGaugeDataMap.TotalTeamPerformance.data.numAttacksPassed + '/' +
                 allGaugeDataMap.TotalTeamPerformance.data.totalAttacks }} attacks passed</p>
               </span>
               <span v-else>
@@ -73,18 +75,20 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="m-3">
-            <h4 class="gauge-title">Email Counts</h4>
+            <h4 class="gauge-title mb-0">Email Statistics</h4>
+            <p class="gauge-description">How many times each email template has been identified as phishing by all
+              users.</p>
 
             <span
               v-if="allGaugeDataMap.EmailCounts && allGaugeDataMap.EmailCounts.data && allGaugeDataMap.EmailCounts.data.length > 0"
               class="gauge-content">
-              <ul class="list-style-none ps-0">
+              <ul class="list-style-none pl-0">
                 <li v-for="email in allGaugeDataMap.EmailCounts.data" class="d-flex justify-content-between">
                   <!-- Email name -->
-                  <p class="ms-3">{{ email.emailName }}</p>
+                  <p class="ml-2">{{ email.emailName }}</p>
 
                   <!-- Email stats -->
-                  <p class="me-3">{{ email.numAttacksPassed + '/' + email.totalAttacks }}</p>
+                  <p class="ml-2">{{ email.numAttacksPassed + '/' + email.totalAttacks }}</p>
                 </li>
               </ul>
             </span>
@@ -101,19 +105,20 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="m-3">
-            <h4 class="gauge-title">Team Performance Last Week</h4>
+            <h4 class="gauge-title mb-0">Team Performance Last Week</h4>
+            <p class="gauge-description">The number of attacks passed per day in the past week.</p>
 
             <span
               v-if="allGaugeDataMap.TeamPerformanceLastWeek && allGaugeDataMap.TeamPerformanceLastWeek.data && allGaugeDataMap.TeamPerformanceLastWeek.data.length > 0"
               class="gauge-content">
-              <ul class="list-style-none ps-0">
+              <ul class="list-style-none pl-0">
                 <li v-for="teamPerf in allGaugeDataMap.TeamPerformanceLastWeek.data"
                   class="d-flex justify-content-between">
                   <!-- Attack date -->
-                  <p class="ms-3">{{ convertTimeObjToDateStr(teamPerf.id) }}</p>
+                  <p class="ml-2">{{ convertTimeObjToDateStr(teamPerf.id) }}</p>
 
                   <!-- Team performance stat -->
-                  <p class="me-3">{{ teamPerf.numAttacksPassed + '/' + teamPerf.totalAttacks }}</p>
+                  <p class="ml-2">{{ teamPerf.numAttacksPassed + '/' + teamPerf.totalAttacks }}</p>
                 </li>
               </ul>
             </span>
@@ -127,19 +132,20 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="m-3">
-            <h4 class="gauge-title">Scheduled Attacks Next Week</h4>
+            <h4 class="gauge-title mb-0">Scheduled Attacks Next Week</h4>
+            <p class="gauge-description">The number of attacks scheduled per day for the next week.</p>
 
             <span
               v-if="allGaugeDataMap.ScheduledAttacksNextWeek && allGaugeDataMap.ScheduledAttacksNextWeek.data && allGaugeDataMap.ScheduledAttacksNextWeek.data.length > 0"
               class="gauge-content">
-              <ul class="list-style-none ps-0">
+              <ul class="list-style-none pl-0">
                 <li v-for="schedAttack in allGaugeDataMap.ScheduledAttacksNextWeek.data"
                   class="d-flex justify-content-between">
                   <!-- Manth and day of scheduled attack -->
-                  <p class="ms-3">{{ convertTimeObjToDateStr(schedAttack.id) }}</p>
+                  <p class="ml-2">{{ convertTimeObjToDateStr(schedAttack.id) }}</p>
 
                   <!-- Number of attacks to perform for each day -->
-                  <p class="me-3">{{ schedAttack.totalAttacks }}</p>
+                  <p class="ml-2">{{ schedAttack.totalAttacks }}</p>
                 </li>
               </ul>
             </span>
@@ -153,19 +159,20 @@
         <div class="gauge-container">
           <!-- Gauge content -->
           <div class="m-3">
-            <h4 class="gauge-title">Scheduled Attacks For Users</h4>
+            <h4 class="gauge-title mb-0">Scheduled Attacks For Users</h4>
+            <p class="gauge-description">The number of future attacks scheduled for each user.</p>
 
             <span
               v-if="allGaugeDataMap.ScheduledAttacksForUsers && allGaugeDataMap.ScheduledAttacksForUsers.data && allGaugeDataMap.ScheduledAttacksForUsers.data.length > 0"
               class="gauge-content">
-              <ul class="list-style-none ps-0">
+              <ul class="list-style-none pl-0">
                 <li v-for="user in allGaugeDataMap.ScheduledAttacksForUsers.data"
                   class="d-flex justify-content-between">
                   <!-- User name -->
-                  <p class="ms-3">{{ user.id }}</p>
+                  <p class="ml-2">{{ user.id }}</p>
 
                   <!-- User stats -->
-                  <p class="me-3">{{ user.totalAttacks }}</p>
+                  <p class="ml-2">{{ user.totalAttacks }}</p>
                 </li>
               </ul>
             </span>
@@ -341,5 +348,10 @@ export default {
 
 .h-75 {
   height: 75% !important;
+}
+
+.gauge-description {
+  font-size: 13px;
+  color: #626262;
 }
 </style>
