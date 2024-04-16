@@ -2,20 +2,24 @@
   <div>
 
     <!-- Tab Description for users -->
-    <h5> Create your own phishing attacks </h5>
-    <hr>
+    <h5>Schedule phishing attacks</h5>
+    <h6 class="section-description">
+      Fill in the form below to send carefully crafted phishing emails to your users now or some
+      time in the future. You can also add new users to the list below.
+    </h6>
+    <hr class="my-3">
 
     <div class="mb-8 page-container mx-auto">
       <div class="mx-2 px-2">
         <!-- Attack name -->
         <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-30">Attack Name: </label>
+          <label class="mr-2 align-self-center w-30">Attack Name: </label>
           <b-form-input type="text" v-model="name"></b-form-input>
         </div>
 
         <!-- Attack Description -->
         <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-30">Attack Description: </label>
+          <label class="mr-2 align-self-center w-30">Attack Description: </label>
           <b-form-textarea type="text" v-model="description"></b-form-textarea>
         </div>
 
@@ -31,15 +35,17 @@
             </template>
 
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-40">Employee Name: </label>
+              <label class="mr-2 align-self-center w-40">Employee Name: </label>
               <b-form-input type="text" class="mx-3" v-model="newEmployeeName"></b-form-input></br>
             </div>
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-40">Employee Email: </label>
+              <label class="mr-2 align-self-center w-40">Employee Email: </label>
               <b-form-input type="text" class="mx-3" v-model="newEmployeeEmail"></b-form-input>
             </div>
-            <b-button class="mt-3" @click="addNewEmployee" variant="primary">Add Employee</b-button>
-            <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
+            <div class="d-flex justify-content-end">
+              <b-button class="mt-3 mr-2" @click="addNewEmployee" variant="primary">Add Employee</b-button>
+              <b-button class="mt-3" @click="hideModal">Cancel</b-button>
+            </div>
 
             <!-- Toast for errors -->
             <b-toast id="new-employee-error-toast" :title="newEmployeeToast.title" auto-hide-delay="5000"
@@ -64,7 +70,7 @@
 
         <!-- Email Templates to choose from -->
         <div class="d-flex mb-3">
-          <label class="me-2 align-self-center w-30">Email Template: </label>
+          <label class="mr-2 align-self-center w-30">Email Template: </label>
           <b-form-select v-model="newTemplateTypeSelected" :options="emailTemplates" value-field="_id" text-field="name"
             class="form-select"></b-form-select></br>
         </div>
@@ -74,22 +80,22 @@
           <div class="d-flex mb-3 w-30"> Attack When: </div>
           <div class="d-flex mb-3">
             <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackNow"></b-form-radio>
-            <label class="me-2 align-self-center"> Attack Now </label>
+            <label class="mr-2 align-self-center"> Attack Now </label>
             <b-form-radio class="mx-3" v-model="attackNowOrLaterRadio" value="attackLater"></b-form-radio>
-            <label class="me-2 align-self-center"> Attack Later </label>
+            <label class="mr-2 align-self-center"> Attack Later </label>
           </div>
         </div>
 
         <!-- Attack date -->
         <div v-if="attackNowOrLaterRadio.includes('attackLater')">
           <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-30">Attack Date: </label>
+            <label class="mr-2 align-self-center w-30">Attack Date: </label>
             <b-form-datepicker v-model="attackLaterDate"></b-form-datepicker>
           </div>
 
           <!-- Attack time -->
           <div class="d-flex mb-3">
-            <label class="me-2 align-self-center w-30">Attack Time: </label>
+            <label class="mr-2 align-self-center w-30">Attack Time: </label>
             <b-form-timepicker v-model="attackLaterTime" locale="en"></b-form-timepicker>
           </div>
 

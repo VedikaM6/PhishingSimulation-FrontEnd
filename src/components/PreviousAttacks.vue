@@ -2,8 +2,12 @@
   <div>
 
     <!-- Tab Description for users -->
-    <h5> Lists out past completed attacks. Click on a row to get more information</h5>
-    <hr>
+    <h5>Information about phishing emails that have been sent</h5>
+    <h6 class="section-description">
+      All previously-sent attacks are listed here. Click on a row to get more information including which users
+      received and email and who failed the test.
+    </h6>
+    <hr class="my-3">
 
     <div class="d-flex mb-8">
       <!-- Left side -->

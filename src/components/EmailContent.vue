@@ -2,14 +2,17 @@
   <div>
 
     <!-- Tab Description for users -->
-    <h5> Create your own phishing attack email templates</h5>
-    <hr>
+    <h5>Create your own phishing attack email templates and view existing ones</h5>
+    <h6 class="section-description">
+      These are the email templates you can choose when sending a phishing attack. Click on an email to get more
+      information.
+    </h6>
+    <hr class="my-3">
 
     <div class="d-flex mb-8">
       <!-- LEFT SIDE -->
       <!-- Displaying a list of all emaill templates in db -->
       <div class="w-50 mx-2 px-2">
-        <p>List of all email templates</p>
         <div>
           <b-table noCollapse striped hover :items="localEmailTemplates" :fields="['name', 'type', 'subject']"
             @row-clicked="emailTemplateRowClicked">
@@ -17,35 +20,37 @@
         </div>
         <!-- Button that opens up a modal to create a new email template -->
         <div>
-          <b-button block v-b-modal.modal-2>Create New Template</b-button>
+          <b-button block v-b-modal.modal-2 variant="primary">Create New Template</b-button>
           <b-modal ref="newTemplateModal" id="modal-2" hide-footer>
             <template #modal-header="{ close }">
               <h5 class="mb-0">New Email Template</h5>
             </template>
 
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Name: </label>
+              <label class="mr-2 align-self-center w-20">Name: </label>
               <b-form-input v-model="name" type="text" class="mx-2"></b-form-input></br>
             </div>
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Type: </label>
+              <label class="mr-2 align-self-center w-20">Type: </label>
               <b-form-select v-model="newTemplateTypeSelected" :options="emailTypeOptions"
                 class="form-select mx-2"></b-form-select></br>
             </div>
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Company: </label>
+              <label class="mr-2 align-self-center w-20">Company: </label>
               <b-form-input v-model="company" type="text" class="mx-2"></b-form-input></br>
             </div>
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Subject: </label>
+              <label class="mr-2 align-self-center w-20">Subject: </label>
               <b-form-input v-model="subject" type="text" class="mx-2"></b-form-input></br>
             </div>
             <div class="d-flex mb-3">
-              <label class="me-2 align-self-center w-20">Body: </label>
+              <label class="mr-2 align-self-center w-20">Body: </label>
               <b-form-textarea v-model="body" type="text" class="mx-2"></b-form-textarea>
             </div>
-            <b-button class="mt-3" @click="createNewTemplate">Create Template</b-button>
-            <b-button class="mt-3" @click="hideModal">Cancel</b-button></br>
+            <div class="d-flex justify-content-end">
+              <b-button class="mt-3 mr-2" @click="createNewTemplate" variant="primary">Create Template</b-button>
+              <b-button class="mt-3" @click="hideModal">Cancel</b-button>
+            </div>
 
             <!-- Toast for errors -->
             <b-toast id="template-error-toast" :title="templateToast.title" auto-hide-delay="5000"

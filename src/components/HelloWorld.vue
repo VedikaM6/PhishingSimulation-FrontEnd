@@ -7,7 +7,7 @@
       <!-- Navbar items container -->
       <div class="custom-nav d-flex">
         <!-- Company name -->
-        <div class="custom-nav-item company-name ps-2 pe-3">
+        <div class="custom-nav-item company-name pl-2 pr-3">
           <span class="d-inline-block mt-2">Vedika Corp</span>
         </div>
 
@@ -24,7 +24,7 @@
         <div
           :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'PreviousAttacks' }]"
           @click="currentView = 'PreviousAttacks'">
-          <span class="d-inline-block">Previous Attack</span>
+          <span class="d-inline-block">Attack History</span>
         </div>
 
         <div class="navbar-item-divider">|</div>
@@ -33,7 +33,7 @@
         <div
           :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'EmailContents' }]"
           @click="currentView = 'EmailContents'">
-          <span class="d-inline-block">Email Contents</span>
+          <span class="d-inline-block">Email Templates</span>
         </div>
 
         <div class="navbar-item-divider">|</div>
@@ -46,7 +46,7 @@
           <external-link-icon size="1x" class="dash-icon"></external-link-icon>
         </div>
 
-        <div class="ms-auto me-3">
+        <div class="ml-auto mr-3">
           <user-icon size="1.5x" class="user-icon"></user-icon>
         </div>
       </div>
@@ -375,6 +375,11 @@ export default {
 }
 
 .dashboard-link {
+  text-decoration: none;
+  color: white;
+}
+
+.dashboard-link:hover {
   text-decoration: none;
   color: white;
 }
