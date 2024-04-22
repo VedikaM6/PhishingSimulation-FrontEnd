@@ -15,7 +15,7 @@
         <div
           :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'AttackSettings' }]"
           @click="currentView = 'AttackSettings'">
-          <span class="d-inline-block">Attack Settings</span>
+          <span class="d-inline-block">Create Attack</span>
         </div>
 
         <div class="navbar-item-divider">|</div>
@@ -24,7 +24,7 @@
         <div
           :class="['custom-nav-item', 'px-2', 'selectable-item', { 'selected-item': currentView === 'PreviousAttacks' }]"
           @click="currentView = 'PreviousAttacks'">
-          <span class="d-inline-block">Attack History</span>
+          <span class="d-inline-block">Past Attacks</span>
         </div>
 
         <div class="navbar-item-divider">|</div>
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <!-- Page contents  -->
+    <!-- Page contents -->
     <div class="mt-3 mx-3">
       <!-- ATTACK SETTINGS  -->
       <div v-if="currentView === 'AttackSettings'">
@@ -74,19 +74,7 @@
         <EmailContent :email-templates="emailTemplates" @createNewEmailTemplate="createNewEmailTemplate"></EmailContent>
       </div>
     </div>
-
-
-
-
-    <!-- <div class="mb-4 ms-auto me-4" style="width: fit-content">
-      <RouterLink to="/dashboard" class="btn btn-primary">Dashboard</RouterLink>
-    </div> -->
-
-    <div>
-
-    </div>
   </div>
-
 </template>
 
 <script>
@@ -332,7 +320,6 @@ export default {
         this.alertText = '';
       }, 5000);
     }
-
   }
 }
 </script>

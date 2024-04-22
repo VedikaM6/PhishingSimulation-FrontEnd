@@ -26,9 +26,19 @@
         <!-- Table that lists out all the employees from the db -->
 
         <p class="d-flex">Select at Least 1 Employee: </p>
+
+        <div>
+          <b-table noCollapse striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']"
+            class="text-align-center">
+            <template #cell(isSelected)="data">
+              <b-form-checkbox v-model="data.item.isSelected" class="text-align-center"></b-form-checkbox>
+            </template>
+          </b-table>
+        </div>
+
         <!-- Button that opens up a modal to add new employees -->
-        <div class="d-flex">
-          <b-button block v-b-modal.modal-1 variant="primary">Add Employee</b-button>
+        <div class="d-flex mb-3">
+          <b-button block v-b-modal.modal-1 variant="primary">Add New Employee</b-button>
           <b-modal ref="addNewEmployeeModal" id="modal-1" hide-footer>
             <template #modal-header="{ close }">
               <h5 class="mb-0">Add Employee</h5>
@@ -52,21 +62,8 @@
               :variant="newEmployeeToast.variant">
               {{ newEmployeeToast.content }}
             </b-toast>
-
           </b-modal>
         </div>
-        <div>
-          <b-table noCollapse striped hover :items="localEmployeeList" :fields="['isSelected', 'name', 'email']"
-            class="text-align-center">
-            <template #cell(isSelected)="data">
-              <b-form-checkbox v-model="data.item.isSelected" class="text-align-center"></b-form-checkbox>
-            </template>
-          </b-table>
-
-        </div>
-
-
-
 
         <!-- Email Templates to choose from -->
         <div class="d-flex mb-3">
@@ -113,10 +110,7 @@
           {{ attackSettingsToast.content }}
         </b-toast>
       </div>
-
     </div>
-
-
   </div>
 </template>
 
